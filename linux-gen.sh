@@ -10,4 +10,4 @@ echo "==== Downloading gdnative_api.json ===="
 curl -O https://raw.githubusercontent.com/godotengine/godot/master/modules/gdnative/gdnative_api.json
 
 echo "==== Generating ===="
-dub run godot-d:generator
+dub run super-dlang-godot3-turbo-hyper-fighting-champion-edition:generator

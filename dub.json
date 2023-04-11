@@ -1,5 +1,5 @@
 {
-	"name": "godot-d",
+	"name": "super-dlang-godot3-turbo-hyper-fighting-champion-edition",
 	"description": "Godot game engine language bindings",
 	"authors": [ "sheepandshepherd" ],
 	"copyright": "Copyright (c) 2007-2018 Juan Linietsky, Ariel Manzur.; Copyright (c) 2014-2018 Godot Engine contributors (cf. AUTHORS.md); Copyright (c) 2017-2018 Godot-D contributors",
@@ -13,7 +13,7 @@
 	"sourcePaths": [ "src", "classes" ],
 
 	"dependencies": {
-		"godot-d:util": "*",
+		"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
 		"utf_bc": "~>0.2.1"
 	},
 
@@ -38,7 +38,7 @@
 			"description": "A program that binds Godot's API for use in Godot-D",
 			"dependencies":
 			{
-				"godot-d:util": "*",
+				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
 				"asdf": "~>0.5.2",
 				"dxml": "~>0.4.1"
 			},
@@ -50,7 +50,7 @@
 			"targetType": "library",
 			"dependencies":
 			{
-				"godot-d:util": "*",
+				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
 				"emsi_containers": "~>0.8.0",
 				"dsymbol": "~>0.9.0",
 				"libdparse": "~>0.13.1"
@@ -64,8 +64,8 @@
 			"targetType": "executable",
 			"dependencies":
 			{
-				"godot-d:util": "*",
-				"godot-d:class-finder": "*"
+				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
+				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:class-finder": "*"
 			},
 			"sourcePaths": [ "util/pregenerate" ],
 			"importPaths": [ "util/pregenerate" ]
