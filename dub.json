@@ -67,20 +67,6 @@
 			"sourcePaths": [ "util/generator" ]
 		},
 		{
-			"name": "class-finder",
-			"description": "A utility for scanning D files to find classes",
-			"targetType": "library",
-			"dependencies":
-			{
-				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
-				"emsi_containers": "~>0.8.0",
-				"dsymbol": "~>0.9.0",
-				"libdparse": "~>0.22.0"
-			},
-			"sourcePaths": [ "util/classfinder" ],
-			"importPaths": [ "util/classfinder" ]
-		},
-		{
 			"name": "verify",
 			"dflags": [ "-preview=dip1000" ],
 			"targetType": "executable",
@@ -89,18 +75,6 @@
 			},
 			"sourcePaths": [ "src/verify" ],
 			"importPaths": [ "src/verify" ]
-		},
-		{
-			"name": "pregenerate",
-			"description": "A preGenerateCommand that creates the Godot entry point mixin automatically",
-			"targetType": "executable",
-			"dependencies":
-			{
-				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
-				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:class-finder": "*"
-			},
-			"sourcePaths": [ "util/pregenerate" ],
-			"importPaths": [ "util/pregenerate" ]
 		},
 		"./examples/test/",
 		"./examples/asteroids/"
