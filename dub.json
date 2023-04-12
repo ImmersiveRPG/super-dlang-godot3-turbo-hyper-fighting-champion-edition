@@ -5,18 +5,6 @@
 	"copyright": "Copyright (c) 2007-2018 Juan Linietsky, Ariel Manzur.; Copyright (c) 2014-2018 Godot Engine contributors (cf. AUTHORS.md); Copyright (c) 2017-2018 Godot-D contributors",
 	"license": "MIT",
 
-	"targetType": "library",
-	"dflags-linux-dmd": ["-fPIC"],
-	"dflags-linux-ldc2": ["-relocation-model=pic"],
-
-	"importPaths": [ "src", "classes" ],
-	"sourcePaths": [ "src", "classes" ],
-
-	"dependencies": {
-		"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
-		"utf_bc": "~>0.2.1"
-	},
-
 	"buildTypes": {
 		"doc-json": {
 			"buildRequirements": ["allowWarnings"],
@@ -25,8 +13,41 @@
 		}
 	},
 
-	"subPackages":
-	[
+	"dflags": ["-preview=dip1000"],
+
+	"configurations": [
+		{
+			"name": "default",
+			"targetType": "library",
+			"dflags-linux-dmd": ["-fPIC"],
+			"dflags-linux-ldc2": ["-relocation-model=pic"],
+		
+			"importPaths": [ "src", "classes" ],
+			"sourcePaths": [ "src", "classes" ],
+			"dependencies": {
+				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
+				"utf_bc": "~>0.2.1",
+				"libdparse": "~>0.22.0"
+			}
+		},
+		{
+			"name": "unittest",
+			"targetPath": "lib",
+			"targetType": "staticLibrary",
+			"targetName": "godot-d-verify-test",
+			"excludedSourceFiles": ["src/verify/main.d", "src/godot/*"],
+			"sourcePaths": [ "src/verify/" ],
+			"importPaths": [ "src/verify/" ],
+			"dependencies": {
+				"bdd": "~>3.1.0",
+				"utf_bc": "~>0.2.1",
+				"libdparse": "~>0.22.0"
+			}
+		}
+	],
+
+
+	"subPackages": [
 		{
 			"name": "util",
 			"targetType": "library",
@@ -53,10 +74,20 @@
 				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
 				"emsi_containers": "~>0.8.0",
 				"dsymbol": "~>0.9.0",
-				"libdparse": "~>0.13.1"
+				"libdparse": "~>0.22.0"
 			},
 			"sourcePaths": [ "util/classfinder" ],
 			"importPaths": [ "util/classfinder" ]
+		},
+		{
+			"name": "verify",
+			"dflags": [ "-preview=dip1000" ],
+			"targetType": "executable",
+			"dependencies": {
+				"libdparse": "~>0.22.0"
+			},
+			"sourcePaths": [ "src/verify" ],
+			"importPaths": [ "src/verify" ]
 		},
 		{
 			"name": "pregenerate",
