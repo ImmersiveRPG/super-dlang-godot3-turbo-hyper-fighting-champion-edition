@@ -61,8 +61,8 @@
 			"dependencies":
 			{
 				"super-dlang-godot3-turbo-hyper-fighting-champion-edition:util": "*",
-				"asdf": "~>0.5.2",
-				"dxml": "~>0.4.1"
+				"asdf": "~>0.7.17",
+				"dxml": "~>0.4.3"
 			},
 			"sourcePaths": [ "util/generator" ]
 		},
