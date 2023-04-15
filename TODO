@@ -1,0 +1,29 @@
+
+. rename parseProject to parseProjectSync
+. rename parse_godot_file to parseProjectAsync
+. move parseProjectAsync into godot_project_parse module
+. Update verify test suite to use getProjectFiles and parseProjectSync
+. add new Vector3 code that can += properly?
+. remove logo and readme code
+. replace GodotNativeLibrary with generateGodotNativeLibrary
+. Update examples to use generateGodotNativeLibrary
+. Update examples to use verify
+. Look at using Mirror for CTFE https://github.com/atilaneves/mirror
+
+. Update to generateGodotNativeLibrary to get symbol_prefix from gdnlib file
+. Update to have a separate call back for Unhandled exceptions
+
+mixin generateGodotNativeLibrary!(
+	"libgame.gdnlib", // FIXME: Get symbol_prefix and list of classes from gdnlib file
+	(GodotInitOptions o) {
+		prints("Library initialized");
+	},
+	(GodotTerminateOptions o) {
+		prints("Library terminated");
+	},
+	// FIXME: Unhandled exceptions can be handled by this
+	(Throwable unhandled_error) {
+		// Do something to handle the error
+	}
+);
+
