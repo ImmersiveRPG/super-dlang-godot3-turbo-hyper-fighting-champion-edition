@@ -1,6 +1,6 @@
 
-. rename parseProject to parseProjectSync
-. rename parse_godot_file to parseProjectAsync
+x. rename parseProject to parseProjectSync
+x. rename parse_godot_file to parseProjectAsync
 . move parseProjectAsync into godot_project_parse module
 . Update verify test suite to use getProjectFiles and parseProjectSync
 . add new Vector3 code that can += properly?

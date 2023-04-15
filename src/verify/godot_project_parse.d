@@ -40,7 +40,7 @@ void getProjectFiles(string full_project_path, void delegate(string full_file_pa
 	}
 }
 
-Project parseProject(string full_project_path) {
+Project parseProjectSync(string full_project_path) {
 	import std.path : extension;
 	import std.array : replace, array;
 	import std.algorithm : filter, map, canFind;
@@ -105,7 +105,7 @@ unittest {
 			string project_path = absolutePath(`test/project_signal/`);
 
 			// Make sure there is a project
-			auto project = parseProject(project_path ~ `project/project.godot`);
+			auto project = parseProjectSync(project_path ~ `project/project.godot`);
 			project.shouldNotBeNull();
 
 			// Make sure there is a scene
@@ -135,7 +135,7 @@ unittest {
 			string project_path = absolutePath(`test/project_unreferenced_files/`);
 
 			// Make sure there is a project
-			auto project = parseProject(project_path ~ `project/project.godot`);
+			auto project = parseProjectSync(project_path ~ `project/project.godot`);
 			project.shouldNotBeNull();
 
 			// Make sure all scenes, scripts, and libraries were found

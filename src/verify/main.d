@@ -77,7 +77,7 @@ int main(string[] args) {
 	stdout.writefln(`Verifying Godot 3 Dlang project:`); stdout.flush();
 	stdout.writefln(`Project file path: %s`, project_path); stdout.flush();
 	stdout.writefln(`Dlang source path: %s`, source_path); stdout.flush();
-	//auto project = parseProject(buildPath(project_path, `project.godot`));
+	//auto project = parseProjectSync(buildPath(project_path, `project.godot`));
 	end = GetCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! setup time: %s`, end - start); stdout.flush();
@@ -87,7 +87,7 @@ int main(string[] args) {
 
 	alias GodotFile = SumType!(Project, Scene, NativeScript, GDScript, NativeLibrary);
 
-	static immutable auto parse_godot_file = function(string name) {
+	static immutable auto parseProjectAsync = function(string name) {
 		import std.string : format;
 		import std.path : extension;
 
@@ -113,10 +113,10 @@ int main(string[] args) {
 	scope(exit) task_pool.stop();
 
 	// Start parsing each file in a task pool
-	Task!(parse_godot_file, string)*[] _parse_tasks;
+	Task!(parseProjectAsync, string)*[] _parse_tasks;
 	getProjectFiles(project_path, (string name) {
 		//stdout.writefln(`!!!! name: %s`, name); stdout.flush();
-		auto t = task!(parse_godot_file)(name);
+		auto t = task!(parseProjectAsync)(name);
 		_parse_tasks ~= t;
 		task_pool.put(t);
 	});

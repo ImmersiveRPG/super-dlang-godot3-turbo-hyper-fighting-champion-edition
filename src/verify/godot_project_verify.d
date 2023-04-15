@@ -70,13 +70,13 @@ string[][string] verifyProject(string project_path, Project project, KlassInfo[]
 unittest {
 	import BDD;
 
-	import godot_project_parse : parseProject;
+	import godot_project_parse : parseProjectSync;
 	import scan_d_code : getGodotScriptClasses;
 
 	string[][string] setupTest(string project_path) {
 		import helpers : absolutePath;
 		project_path = absolutePath(project_path);
-		auto project = parseProject(project_path ~ `project/project.godot`);
+		auto project = parseProjectSync(project_path ~ `project/project.godot`);
 		auto class_infos = getGodotScriptClasses(project_path ~ `src/`);
 		return verifyProject(project_path ~ `project/`, project, class_infos);
 	}
