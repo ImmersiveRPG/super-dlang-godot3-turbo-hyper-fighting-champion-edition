@@ -7,6 +7,8 @@ module godot_project_parse;
 
 
 import std.stdio : stdout;
+import std.sumtype : SumType, match;
+
 import godot_project;
 
 void getProjectFiles(string full_project_path, void delegate(string full_file_path) cb) {
@@ -37,6 +39,28 @@ void getProjectFiles(string full_project_path, void delegate(string full_file_pa
 			.chompPrefix(project_dir)
 			.stripLeft(`/`);
 		cb(f);
+	}
+}
+
+alias GodotFile = SumType!(Project, Scene, NativeScript, GDScript, NativeLibrary);
+
+GodotFile parseProjectAsync(string name) {
+	import std.string : format;
+	import std.path : extension;
+
+	switch (extension(name)) {
+		case ".godot":
+			return GodotFile(new Project(name));
+		case ".tscn":
+			return GodotFile(new Scene(name));
+		case ".gdns":
+			return GodotFile(new NativeScript(name));
+		case ".gd":
+			return GodotFile(new GDScript(name));
+		case ".gdnlib":
+			return GodotFile(new NativeLibrary(name));
+		default:
+			throw new Exception(`Unexpected file type: "%s"`.format(name));
 	}
 }
 

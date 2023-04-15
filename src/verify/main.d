@@ -85,28 +85,6 @@ int main(string[] args) {
 
 	start = GetCpuTicksNS();
 
-	alias GodotFile = SumType!(Project, Scene, NativeScript, GDScript, NativeLibrary);
-
-	static immutable auto parseProjectAsync = function(string name) {
-		import std.string : format;
-		import std.path : extension;
-
-		switch (extension(name)) {
-			case ".godot":
-				return GodotFile(new Project(name));
-			case ".tscn":
-				return GodotFile(new Scene(name));
-			case ".gdns":
-				return GodotFile(new NativeScript(name));
-			case ".gd":
-				return GodotFile(new GDScript(name));
-			case ".gdnlib":
-				return GodotFile(new NativeLibrary(name));
-			default:
-				throw new Exception(`Unexpected file type: "%s"`.format(name));
-		}
-	};
-
 	// Setup task pool to use 1 to 4 threads
 	u32 cpu_count = clamp(totalCPUs, 1, 4);
 	auto task_pool = new TaskPool(cpu_count);
