@@ -70,7 +70,7 @@ string[][string] verifyProject(string project_path, ProjectInfo info, KlassInfo[
 unittest {
 	import BDD;
 
-	import godot_project_parse : parseProjectInfoSync;
+	import godot_project_parse : parseProjectInfo;
 	import scan_d_code : getGodotScriptClasses;
 
 	string[][string] setupTest(string project_path) {
@@ -79,7 +79,7 @@ unittest {
 		string godot_path = buildPath(project_path, `project/`);
 		string src_path = buildPath(project_path, `src/`);
 
-		auto info = parseProjectInfoSync(godot_path);
+		auto info = parseProjectInfo(godot_path);
 		auto class_infos = getGodotScriptClasses(src_path);
 		return verifyProject(godot_path, info, class_infos);
 	}

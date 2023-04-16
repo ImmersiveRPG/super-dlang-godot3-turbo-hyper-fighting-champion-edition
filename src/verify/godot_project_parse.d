@@ -60,7 +60,7 @@ GodotFile parseGodotFile(string name) {
 	}
 }
 
-ProjectInfo parseProjectInfoSync(string full_godot_project_path) {
+ProjectInfo parseProjectInfo(string full_godot_project_path) {
 	import std.path : extension;
 	import std.array : replace, array;
 	import std.algorithm : filter, map, canFind;
@@ -120,7 +120,7 @@ unittest {
 			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto info = parseProjectInfoSync(godot_path);
+			auto info = parseProjectInfo(godot_path);
 			info._project.shouldNotBeNull();
 
 			// Make sure there is a scene
@@ -152,7 +152,7 @@ unittest {
 			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto info = parseProjectInfoSync(godot_path);
+			auto info = parseProjectInfo(godot_path);
 			info.shouldNotBeNull();
 
 			// Make sure all scenes, scripts, and libraries were found

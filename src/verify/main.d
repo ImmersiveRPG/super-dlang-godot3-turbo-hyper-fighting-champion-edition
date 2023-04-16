@@ -84,7 +84,7 @@ int main(string[] args) {
 
 	// Get the godot project info
 	start = GetCpuTicksNS();
-	auto info = parseProjectInfoSync(project_path);
+	auto info = parseProjectInfo(project_path);
 	end = GetCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! parse time: %s`, end - start); stdout.flush();
