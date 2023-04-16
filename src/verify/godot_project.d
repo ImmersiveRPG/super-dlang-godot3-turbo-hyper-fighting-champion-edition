@@ -193,14 +193,14 @@ unittest {
 }
 
 class ProjectInfo {
-	Project _project;
-	Scene[string] _scenes;
-	GDScript[string] _gdscripts;
-	NativeScript[string] _scripts;
-	NativeLibrary[string] _libraries;
+	ProjectFile _project;
+	SceneFile[string] _scenes;
+	GDScriptFile[string] _gdscripts;
+	NativeScriptFile[string] _scripts;
+	NativeLibraryFile[string] _libraries;
 }
 
-class Project {
+class ProjectFile {
 	string _main_scene_path = null;
 	string _path = null;
 	string _error = null;
@@ -234,7 +234,7 @@ unittest {
 	import BDD;
 	import std.file : chdir;
 
-	describe("godot_project#Project",
+	describe("godot_project#ProjectFile",
 		before(delegate(){
 			reset_path("test/project_normal/project/");
 		}),
@@ -242,12 +242,12 @@ unittest {
 			chdir(_root_path);
 		}),
 		it("Should parse project", delegate() {
-			auto project = new Project("project.godot");
+			auto project = new ProjectFile("project.godot");
 			project._path.shouldEqual("project.godot");
 			project._error.shouldBeNull();
 		}),
 		it("Should fail to parse invalid project", delegate() {
-			auto project = new Project("XXX.godot");
+			auto project = new ProjectFile("XXX.godot");
 			project._path.shouldEqual("XXX.godot");
 			project._error.shouldNotBeNull();
 			project._error.shouldEqual("Failed to find XXX.godot file ...");
@@ -255,7 +255,7 @@ unittest {
 	);
 }
 
-class Scene {
+class SceneFile {
 	string _path = null;
 	string _error = null;
 	HeadingNode[] _nodes;
@@ -307,7 +307,7 @@ unittest {
 	import BDD;
 	import std.file : chdir;
 
-	describe("godot_project#Scene",
+	describe("godot_project#SceneFile",
 		before(delegate(){
 			reset_path("test/project_normal/project/");
 		}),
@@ -315,7 +315,7 @@ unittest {
 			chdir(_root_path);
 		}),
 		it("Should parse scene with child scene", delegate() {
-			auto scene = new Scene("Level/Level.tscn");
+			auto scene = new SceneFile("Level/Level.tscn");
 			scene._path.shouldEqual("Level/Level.tscn");
 			scene._error.shouldBeNull();
 			scene._resources.length.shouldEqual(2);
@@ -329,7 +329,7 @@ unittest {
 			scene._resources[1].isValid.shouldEqual(true);
 		}),
 		it("Should parse scene with child resources", delegate() {
-			auto scene = new Scene("Player/Player.tscn");
+			auto scene = new SceneFile("Player/Player.tscn");
 			scene._path.shouldEqual("Player/Player.tscn");
 			scene._error.shouldBeNull();
 			scene._resources.length.shouldEqual(2);
@@ -343,7 +343,7 @@ unittest {
 			scene._resources[1].isValid.shouldEqual(true);
 		}),
 		it("Should fail to parse invalid scene", delegate() {
-			auto scene = new Scene("Level/XXX.tscn");
+			auto scene = new SceneFile("Level/XXX.tscn");
 			scene._path.shouldEqual("Level/XXX.tscn");
 			scene._error.shouldNotBeNull();
 			scene._error.shouldEqual("Failed to find Level/XXX.tscn file ...");
@@ -352,7 +352,7 @@ unittest {
 	);
 }
 
-class GDScript {
+class GDScriptFile {
 	string _path = null;
 	string _error = null;
 
@@ -369,7 +369,7 @@ class GDScript {
 	}
 }
 
-class NativeScript {
+class NativeScriptFile {
 	string _path = null;
 	string _error = null;
 	string _class_name = null;
@@ -415,7 +415,7 @@ unittest {
 	import BDD;
 	import std.file : chdir;
 
-	describe("godot_project#NativeScript",
+	describe("godot_project#NativeScriptFile",
 		before(delegate(){
 			reset_path("test/project_normal/project/");
 		}),
@@ -423,7 +423,7 @@ unittest {
 			chdir(_root_path);
 		}),
 		it("Should parse native script", delegate() {
-			auto script = new NativeScript("Player/Player.gdns");
+			auto script = new NativeScriptFile("Player/Player.gdns");
 			script._path.shouldEqual("Player/Player.gdns");
 			script._error.shouldBeNull();
 			script._class_name.shouldEqual("player.Player");
@@ -433,7 +433,7 @@ unittest {
 			script._native_library._type.shouldEqual("GDNativeLibrary");
 		}),
 		it("Should fail to parse invalid native script", delegate() {
-			auto script = new NativeScript("Player/XXX.gdns");
+			auto script = new NativeScriptFile("Player/XXX.gdns");
 			script._path.shouldEqual("Player/XXX.gdns");
 			script._error.shouldNotBeNull();
 			script._error.shouldEqual("Failed to find Player/XXX.gdns file ...");
@@ -444,7 +444,7 @@ unittest {
 	);
 }
 
-class NativeLibrary {
+class NativeLibraryFile {
 	string _path = null;
 	string _error = null;
 	string _dll_windows_path = null;
@@ -490,7 +490,7 @@ unittest {
 	import BDD;
 	import std.file : chdir;
 
-	describe("godot_project#NativeLibrary",
+	describe("godot_project#NativeLibraryFile",
 		before(delegate(){
 			reset_path("test/project_normal/project/");
 		}),
@@ -498,7 +498,7 @@ unittest {
 			chdir(_root_path);
 		}),
 		it("Should parse native library", delegate() {
-			auto library = new NativeLibrary("libgame.gdnlib");
+			auto library = new NativeLibraryFile("libgame.gdnlib");
 			library._path.shouldEqual("libgame.gdnlib");
 			library._error.shouldBeNull();
 			library._dll_windows_path.shouldEqual("game.dll");
@@ -506,7 +506,7 @@ unittest {
 			library._symbol_prefix.shouldEqual("game");
 		}),
 		it("Should fail to parse invalid native library", delegate() {
-			auto library = new NativeLibrary("XXX.gdnlib");
+			auto library = new NativeLibraryFile("XXX.gdnlib");
 			library._path.shouldEqual("XXX.gdnlib");
 			library._error.shouldNotBeNull();
 			library._error.shouldEqual("Failed to find XXX.gdnlib file ...");

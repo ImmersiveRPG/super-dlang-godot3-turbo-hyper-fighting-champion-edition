@@ -38,7 +38,7 @@ void listGodotFiles(string full_godot_project_path, void delegate(string full_fi
 	}
 }
 
-alias GodotFile = SumType!(Project, Scene, NativeScript, GDScript, NativeLibrary);
+alias GodotFile = SumType!(ProjectFile, SceneFile, NativeScriptFile, GDScriptFile, NativeLibraryFile);
 
 GodotFile parseGodotFile(string name) {
 	import std.string : format;
@@ -46,15 +46,15 @@ GodotFile parseGodotFile(string name) {
 
 	switch (extension(name)) {
 		case ".godot":
-			return GodotFile(new Project(name));
+			return GodotFile(new ProjectFile(name));
 		case ".tscn":
-			return GodotFile(new Scene(name));
+			return GodotFile(new SceneFile(name));
 		case ".gdns":
-			return GodotFile(new NativeScript(name));
+			return GodotFile(new NativeScriptFile(name));
 		case ".gd":
-			return GodotFile(new GDScript(name));
+			return GodotFile(new GDScriptFile(name));
 		case ".gdnlib":
-			return GodotFile(new NativeLibrary(name));
+			return GodotFile(new NativeLibraryFile(name));
 		default:
 			throw new Exception(`Unexpected file type: "%s"`.format(name));
 	}
@@ -95,11 +95,11 @@ ProjectInfo parseProjectInfo(string full_godot_project_path) {
 		GodotFile godot_file = t.yieldForce();
 		//stdout.writefln(`!!!! godot_file: %s`, godot_file); stdout.flush();
 		godot_file.match!(
-			(Project p) { info._project = p; },
-			(Scene s) { info._scenes[s._path] = s; },
-			(NativeScript ns) { info._scripts[ns._path] = ns; },
-			(GDScript gs) { info._gdscripts[gs._path] = gs; },
-			(NativeLibrary nl) { info._libraries[nl._path] = nl; }
+			(ProjectFile p) { info._project = p; },
+			(SceneFile s) { info._scenes[s._path] = s; },
+			(NativeScriptFile ns) { info._scripts[ns._path] = ns; },
+			(GDScriptFile gs) { info._gdscripts[gs._path] = gs; },
+			(NativeLibraryFile nl) { info._libraries[nl._path] = nl; }
 		);
 	}
 
