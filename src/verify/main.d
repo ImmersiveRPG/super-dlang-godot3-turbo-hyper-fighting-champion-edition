@@ -77,7 +77,7 @@ int main(string[] args) {
 	stdout.writefln(`Verifying Godot 3 Dlang project:`); stdout.flush();
 	stdout.writefln(`Project file path: %s`, project_path); stdout.flush();
 	stdout.writefln(`Dlang source path: %s`, source_path); stdout.flush();
-	//auto project = parseProjectSync(buildPath(project_path, `project.godot`));
+	//auto info = parseProjectInfoSync(buildPath(project_path, `project.godot`));
 	end = GetCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! setup time: %s`, end - start); stdout.flush();
@@ -91,10 +91,10 @@ int main(string[] args) {
 	scope(exit) task_pool.stop();
 
 	// Start parsing each file in a task pool
-	Task!(parseProjectAsync, string)*[] _parse_tasks;
+	Task!(parseGodotFile, string)*[] _parse_tasks;
 	getProjectFiles(project_path, (string name) {
 		//stdout.writefln(`!!!! name: %s`, name); stdout.flush();
-		auto t = task!(parseProjectAsync)(name);
+		auto t = task!(parseGodotFile)(name);
 		_parse_tasks ~= t;
 		task_pool.put(t);
 	});
@@ -103,15 +103,15 @@ int main(string[] args) {
 	task_pool.finish();
 
 	// Copy all parsed files into project
-	Project project;
+	Info info = new Info();
 	foreach (t ; _parse_tasks) {
 		GodotFile godot_file = t.yieldForce();
 		godot_file.match!(
-			(Project p) { project = p; },
-			(Scene s) { project._scenes[s._path] = s; },
-			(NativeScript ns) { project._scripts[ns._path] = ns; },
-			(GDScript gs) { project._gdscripts[gs._path] = gs; },
-			(NativeLibrary nl) { project._libraries[nl._path] = nl; }
+			(Project p) { info._project = p; },
+			(Scene s) { info._scenes[s._path] = s; },
+			(NativeScript ns) { info._scripts[ns._path] = ns; },
+			(GDScript gs) { info._gdscripts[gs._path] = gs; },
+			(NativeLibrary nl) { info._libraries[nl._path] = nl; }
 		);
 	}
 
@@ -129,7 +129,7 @@ int main(string[] args) {
 
 	// Find and print any errors
 	start = GetCpuTicksNS();
-	auto project_errors = verifyProject(project_path, project, class_infos);
+	auto project_errors = verifyProject(project_path, info, class_infos);
 	int error_count;
 	foreach (name, errors ; project_errors) {
 		stdout.writeln(name);
@@ -157,8 +157,8 @@ int main(string[] args) {
 		scope (exit) file.close();
 
 		file.writefln("\n\nenum string[string] script_list = [");
-		foreach (info ; class_infos) {
-			file.writefln(`	"%s" : "%s",`, info._module, info.class_name);
+		foreach (class_info ; class_infos) {
+			file.writefln(`	"%s" : "%s",`, class_info._module, class_info.class_name);
 		}
 		file.writefln("];\n");
 	}

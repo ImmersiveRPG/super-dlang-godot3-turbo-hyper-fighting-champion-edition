@@ -12,7 +12,7 @@ import godot_project_parse;
 
 
 
-string[][string] verifyProject(string project_path, Project project, KlassInfo[] class_infos) {
+string[][string] verifyProject(string project_path, Info info, KlassInfo[] class_infos) {
 	import std.string : format;
 	import std.algorithm : filter;
 	import std.array : assocArray, byPair;
@@ -21,39 +21,39 @@ string[][string] verifyProject(string project_path, Project project, KlassInfo[]
 	string[][string] retval;
 
 	// Check projects
-	foreach (Project proj ; [project]) {
-		if (proj._error) continue;
+	Project project = info._project;
+	if (project && ! project._error) {
 		string[] errors;
-		errors ~= new VerifyProjectVisitorMainScene().visit(project_path, proj, class_infos);
-		if (errors.length) retval[proj._path] = errors;
+		errors ~= new VerifyProjectVisitorMainScene().visit(project_path, info, class_infos);
+		if (errors.length) retval[project._path] = errors;
 	}
 
 	// Check scenes
-	foreach (scene ; project._scenes.values.sortBy!("_path")) {
+	foreach (scene ; info._scenes.values.sortBy!("_path")) {
 		if (scene._error) continue;
 		string[] errors;
-		errors ~= new VerifySceneVisitorResource().visit(scene, project_path, project, class_infos);
-		errors ~= new VerifySceneVisitorSignalMethodInCode().visit(scene, project_path, project, class_infos);
-		errors ~= new VerifySceneVisitorSceneTypeClassTypeMismatch().visit(scene, project_path, project, class_infos);
+		errors ~= new VerifySceneVisitorResource().visit(scene, project_path, info, class_infos);
+		errors ~= new VerifySceneVisitorSignalMethodInCode().visit(scene, project_path, info, class_infos);
+		errors ~= new VerifySceneVisitorSceneTypeClassTypeMismatch().visit(scene, project_path, info, class_infos);
 		if (errors.length) retval["tscn: %s".format(scene._path)] = errors;
 	}
 
 	// Check scripts
-	foreach (script ; project._scripts.values.sortBy!("_path")) {
+	foreach (script ; info._scripts.values.sortBy!("_path")) {
 		if (script._error) continue;
 		string[] errors;
-		errors ~= new VerifyScriptVisitorNativeLibrary().visit(script, project_path, project, class_infos);
-		errors ~= new VerifyScriptVisitorClassName().visit(script, project_path, project, class_infos);
-		errors ~= new VerifyScriptVisitorScriptClassInCode().visit(script, project_path, project, class_infos);
+		errors ~= new VerifyScriptVisitorNativeLibrary().visit(script, project_path, info, class_infos);
+		errors ~= new VerifyScriptVisitorClassName().visit(script, project_path, info, class_infos);
+		errors ~= new VerifyScriptVisitorScriptClassInCode().visit(script, project_path, info, class_infos);
 		if (errors.length) retval["gdns: %s".format(script._path)] = errors;
 	}
 
 	// Check libraries
-	foreach (library ; project._libraries.values.sortBy!("_path")) {
+	foreach (library ; info._libraries.values.sortBy!("_path")) {
 		if (library._error) continue;
 		string[] errors;
-		errors ~= new VerifyLibraryVisitorSymbolPrefix().visit(library, project_path, project, class_infos);
-		errors ~= new VerifyLibraryVisitorDllPath().visit(library, project_path, project, class_infos);
+		errors ~= new VerifyLibraryVisitorSymbolPrefix().visit(library, project_path, info, class_infos);
+		errors ~= new VerifyLibraryVisitorDllPath().visit(library, project_path, info, class_infos);
 		if (errors.length) retval["gdnlib: %s".format(library._path)] = errors;
 	}
 
@@ -70,15 +70,15 @@ string[][string] verifyProject(string project_path, Project project, KlassInfo[]
 unittest {
 	import BDD;
 
-	import godot_project_parse : parseProjectSync;
+	import godot_project_parse : parseProjectInfoSync;
 	import scan_d_code : getGodotScriptClasses;
 
 	string[][string] setupTest(string project_path) {
 		import helpers : absolutePath;
 		project_path = absolutePath(project_path);
-		auto project = parseProjectSync(project_path ~ `project/project.godot`);
+		auto info = parseProjectInfoSync(project_path ~ `project/project.godot`);
 		auto class_infos = getGodotScriptClasses(project_path ~ `src/`);
-		return verifyProject(project_path ~ `project/`, project, class_infos);
+		return verifyProject(project_path ~ `project/`, info, class_infos);
 	}
 
 	describe("godot_project_verify#project",
@@ -180,31 +180,31 @@ unittest {
 private:
 
 abstract class VerifyProjectVisitor {
-	string[] visit(string project_path, Project project, KlassInfo[] class_infos);
+	string[] visit(string project_path, Info info, KlassInfo[] class_infos);
 }
 
 abstract class VerifySceneVisitor {
-	string[] visit(Scene scene, string project_path, Project project, KlassInfo[] class_infos);
+	string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos);
 }
 
 abstract class VerifyScriptVisitor {
-	string[] visit(NativeScript script, string project_path, Project project, KlassInfo[] class_infos);
+	string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos);
 }
 
 abstract class VerifyLibraryVisitor {
-	string[] visit(NativeLibrary library, string project_path, Project project, KlassInfo[] class_infos);
+	string[] visit(NativeLibrary library, string project_path, Info info, KlassInfo[] class_infos);
 }
 
 class VerifyProjectVisitorMainScene : VerifyProjectVisitor {
-	override string[] visit(string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(string project_path, Info info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		string[] errors;
 
-		if (project._main_scene_path == null) {
+		if (info._project._main_scene_path == null) {
 			errors ~= `Project missing main scene`;
-		} else if (! exists(project_path ~ project._main_scene_path)) {
-			errors ~= `Project main scene file not found: "%s"`.format(project._main_scene_path);
+		} else if (! exists(project_path ~ info._project._main_scene_path)) {
+			errors ~= `Project main scene file not found: "%s"`.format(info._project._main_scene_path);
 		}
 
 		return errors;
@@ -212,7 +212,7 @@ class VerifyProjectVisitorMainScene : VerifyProjectVisitor {
 }
 
 class VerifySceneVisitorResource : VerifySceneVisitor {
-	override string[] visit(Scene scene, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		import std.algorithm : filter, sort;
@@ -233,7 +233,7 @@ class VerifySceneVisitorResource : VerifySceneVisitor {
 }
 
 class VerifySceneVisitorSignalMethodInCode : VerifySceneVisitor {
-	override string[] visit(Scene scene, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.algorithm : canFind, filter, map;
 		import std.array : assocArray, byPair;
@@ -261,7 +261,7 @@ class VerifySceneVisitorSignalMethodInCode : VerifySceneVisitor {
 
 			// Get all the scripts with the same paths as the resources
 			auto resource = resources.front;
-			auto scripts = project._scripts
+			auto scripts = info._scripts
 				.byPair
 				.filter!(pair => pair.key == resource._path)
 				.map!(pair => pair.value);
@@ -310,7 +310,7 @@ class VerifySceneVisitorSignalMethodInCode : VerifySceneVisitor {
 }
 
 class VerifySceneVisitorSceneTypeClassTypeMismatch : VerifySceneVisitor {
-	override string[] visit(Scene scene, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		import std.path : extension;
@@ -324,7 +324,7 @@ class VerifySceneVisitorSceneTypeClassTypeMismatch : VerifySceneVisitor {
 			auto resources = scene._resources
 				.filter!(r => r._id == node._script.id)
 				.filter!(r => r._path.extension == ".gdns")
-				.filter!(r => r._path in project._scripts);
+				.filter!(r => r._path in info._scripts);
 
 			// Make sure the node is referencing an existing resource
 			if (resources.empty) {
@@ -333,7 +333,7 @@ class VerifySceneVisitorSceneTypeClassTypeMismatch : VerifySceneVisitor {
 			}
 			auto resource = resources.front;
 
-			auto script = project._scripts[resource._path];
+			auto script = info._scripts[resource._path];
 			string class_name = script._class_name;
 
 			// Find all the classes with same type
@@ -355,7 +355,7 @@ class VerifySceneVisitorSceneTypeClassTypeMismatch : VerifySceneVisitor {
 }
 
 class VerifyScriptVisitorNativeLibrary : VerifyScriptVisitor {
-	override string[] visit(NativeScript script, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		string[] errors;
@@ -374,7 +374,7 @@ class VerifyScriptVisitorNativeLibrary : VerifyScriptVisitor {
 }
 
 class VerifyScriptVisitorClassName : VerifyScriptVisitor {
-	override string[] visit(NativeScript script, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos) {
 		string[] errors;
 
 		// Make sure script has a class name
@@ -387,7 +387,7 @@ class VerifyScriptVisitorClassName : VerifyScriptVisitor {
 }
 
 class VerifyScriptVisitorScriptClassInCode : VerifyScriptVisitor {
-	override string[] visit(NativeScript script, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.algorithm : filter;
 		import helpers : sortBy;
@@ -409,7 +409,7 @@ class VerifyScriptVisitorScriptClassInCode : VerifyScriptVisitor {
 }
 
 class VerifyLibraryVisitorSymbolPrefix : VerifyLibraryVisitor {
-	override string[] visit(NativeLibrary library, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(NativeLibrary library, string project_path, Info info, KlassInfo[] class_infos) {
 		string[] errors;
 
 		// Make sure library has symbol_prefix
@@ -422,7 +422,7 @@ class VerifyLibraryVisitorSymbolPrefix : VerifyLibraryVisitor {
 }
 
 class VerifyLibraryVisitorDllPath : VerifyLibraryVisitor {
-	override string[] visit(NativeLibrary library, string project_path, Project project, KlassInfo[] class_infos) {
+	override string[] visit(NativeLibrary library, string project_path, Info info, KlassInfo[] class_infos) {
 		string[] errors;
 
 		// Make sure the dll/so is specified

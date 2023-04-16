@@ -7,8 +7,11 @@ module godot_project_parse;
 
 
 import std.stdio : stdout;
+import std.parallelism : Task, task, TaskPool, totalCPUs;
 import std.sumtype : SumType, match;
+import std.algorithm.comparison : clamp;
 
+import helpers;
 import godot_project;
 
 void getProjectFiles(string full_project_path, void delegate(string full_file_path) cb) {
@@ -44,7 +47,7 @@ void getProjectFiles(string full_project_path, void delegate(string full_file_pa
 
 alias GodotFile = SumType!(Project, Scene, NativeScript, GDScript, NativeLibrary);
 
-GodotFile parseProjectAsync(string name) {
+GodotFile parseGodotFile(string name) {
 	import std.string : format;
 	import std.path : extension;
 
@@ -64,7 +67,7 @@ GodotFile parseProjectAsync(string name) {
 	}
 }
 
-Project parseProjectSync(string full_project_path) {
+Info parseProjectInfoSync(string full_project_path) {
 	import std.path : extension;
 	import std.array : replace, array;
 	import std.algorithm : filter, map, canFind;
@@ -91,30 +94,30 @@ Project parseProjectSync(string full_project_path) {
 			.array;
 
 	// Scan each file
-	Project project;
+	Info info = new Info();
 	foreach (name ; files_to_scan) {
 		switch (extension(name)) {
 			case ".godot":
-				project = new Project(name);
+				info._project = new Project(name);
 				break;
 			case ".tscn":
-				project._scenes[name] = new Scene(name);
+				info._scenes[name] = new Scene(name);
 				break;
 			case ".gdns":
-				project._scripts[name] = new NativeScript(name);
+				info._scripts[name] = new NativeScript(name);
 				break;
 			case ".gd":
-				project._gdscripts[name] = new GDScript(name);
+				info._gdscripts[name] = new GDScript(name);
 				break;
 			case ".gdnlib":
-				project._libraries[name] = new NativeLibrary(name);
+				info._libraries[name] = new NativeLibrary(name);
 				break;
 			default:
 				break;
 		}
 	}
 
-	return project;
+	return info;
 }
 
 unittest {
@@ -129,12 +132,12 @@ unittest {
 			string project_path = absolutePath(`test/project_signal/`);
 
 			// Make sure there is a project
-			auto project = parseProjectSync(project_path ~ `project/project.godot`);
-			project.shouldNotBeNull();
+			auto info = parseProjectInfoSync(project_path ~ `project/project.godot`);
+			info._project.shouldNotBeNull();
 
 			// Make sure there is a scene
-			project._scenes.keys.shouldEqual(["Level/Level.tscn"]);
-			auto scene = project._scenes["Level/Level.tscn"];
+			info._scenes.keys.shouldEqual(["Level/Level.tscn"]);
+			auto scene = info._scenes["Level/Level.tscn"];
 			scene.shouldNotBeNull();
 
 			// Make sure the scene has a signal
@@ -147,8 +150,8 @@ unittest {
 			auto resource = scene._resources[0];
 
 			// Make sure the scene has a script
-			project._scripts.keys.shouldEqual(["Level/Level.gdns"]);
-			auto script = project._scripts["Level/Level.gdns"];
+			info._scripts.keys.shouldEqual(["Level/Level.gdns"]);
+			auto script = info._scripts["Level/Level.gdns"];
 			scene._connections.length.shouldEqual(1);
 
 			// Make sure there is D code
@@ -159,14 +162,14 @@ unittest {
 			string project_path = absolutePath(`test/project_unreferenced_files/`);
 
 			// Make sure there is a project
-			auto project = parseProjectSync(project_path ~ `project/project.godot`);
-			project.shouldNotBeNull();
+			auto info = parseProjectInfoSync(project_path ~ `project/project.godot`);
+			info.shouldNotBeNull();
 
 			// Make sure all scenes, scripts, and libraries were found
-			project._scenes.keys.shouldEqual(["Player/Player.tscn", "Box2/Box2.tscn", "Level/Level.tscn"]);
-			project._gdscripts.keys.shouldEqual(["Box2/Box2.gd"]);
-			project._scripts.keys.shouldEqual(["Player/Player.gdns"]);
-			project._libraries.keys.shouldEqual(["libgame.gdnlib"]);
+			info._scenes.keys.shouldEqual(["Player/Player.tscn", "Box2/Box2.tscn", "Level/Level.tscn"]);
+			info._gdscripts.keys.shouldEqual(["Box2/Box2.gd"]);
+			info._scripts.keys.shouldEqual(["Player/Player.gdns"]);
+			info._libraries.keys.shouldEqual(["libgame.gdnlib"]);
 
 			// Make sure the D code was found
 			auto class_infos = getGodotScriptClasses(project_path ~ `src/`);

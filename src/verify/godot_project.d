@@ -192,14 +192,18 @@ unittest {
 	);
 }
 
-class Project {
-	string _main_scene_path = null;
-	string _path = null;
-	string _error = null;
+class Info {
+	Project _project;
 	Scene[string] _scenes;
 	GDScript[string] _gdscripts;
 	NativeScript[string] _scripts;
 	NativeLibrary[string] _libraries;
+}
+
+class Project {
+	string _main_scene_path = null;
+	string _path = null;
+	string _error = null;
 
 	this(string file_name) {
 		import std.string : format;
