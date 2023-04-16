@@ -60,7 +60,7 @@ GodotFile parseGodotFile(string name) {
 	}
 }
 
-Info parseProjectInfoSync(string full_godot_project_path) {
+ProjectInfo parseProjectInfoSync(string full_godot_project_path) {
 	import std.path : extension;
 	import std.array : replace, array;
 	import std.algorithm : filter, map, canFind;
@@ -90,7 +90,7 @@ Info parseProjectInfoSync(string full_godot_project_path) {
 	task_pool.finish();
 
 	// Copy all parsed files into project
-	Info info = new Info();
+	ProjectInfo info = new ProjectInfo();
 	foreach (t ; _parse_tasks) {
 		GodotFile godot_file = t.yieldForce();
 		//stdout.writefln(`!!!! godot_file: %s`, godot_file); stdout.flush();

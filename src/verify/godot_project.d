@@ -192,7 +192,7 @@ unittest {
 	);
 }
 
-class Info {
+class ProjectInfo {
 	Project _project;
 	Scene[string] _scenes;
 	GDScript[string] _gdscripts;

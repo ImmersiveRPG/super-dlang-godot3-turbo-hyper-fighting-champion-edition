@@ -12,7 +12,7 @@ import godot_project_parse;
 
 
 
-string[][string] verifyProject(string project_path, Info info, KlassInfo[] class_infos) {
+string[][string] verifyProject(string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 	import std.string : format;
 	import std.algorithm : filter;
 	import std.array : assocArray, byPair;
@@ -183,23 +183,23 @@ unittest {
 private:
 
 abstract class VerifyProjectVisitor {
-	string[] visit(string project_path, Info info, KlassInfo[] class_infos);
+	string[] visit(string project_path, ProjectInfo info, KlassInfo[] class_infos);
 }
 
 abstract class VerifySceneVisitor {
-	string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos);
+	string[] visit(Scene scene, string project_path, ProjectInfo info, KlassInfo[] class_infos);
 }
 
 abstract class VerifyScriptVisitor {
-	string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos);
+	string[] visit(NativeScript script, string project_path, ProjectInfo info, KlassInfo[] class_infos);
 }
 
 abstract class VerifyLibraryVisitor {
-	string[] visit(NativeLibrary library, string project_path, Info info, KlassInfo[] class_infos);
+	string[] visit(NativeLibrary library, string project_path, ProjectInfo info, KlassInfo[] class_infos);
 }
 
 class VerifyProjectVisitorMainScene : VerifyProjectVisitor {
-	override string[] visit(string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		string[] errors;
@@ -215,7 +215,7 @@ class VerifyProjectVisitorMainScene : VerifyProjectVisitor {
 }
 
 class VerifySceneVisitorResource : VerifySceneVisitor {
-	override string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(Scene scene, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		import std.algorithm : filter, sort;
@@ -236,7 +236,7 @@ class VerifySceneVisitorResource : VerifySceneVisitor {
 }
 
 class VerifySceneVisitorSignalMethodInCode : VerifySceneVisitor {
-	override string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(Scene scene, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.algorithm : canFind, filter, map;
 		import std.array : assocArray, byPair;
@@ -313,7 +313,7 @@ class VerifySceneVisitorSignalMethodInCode : VerifySceneVisitor {
 }
 
 class VerifySceneVisitorSceneTypeClassTypeMismatch : VerifySceneVisitor {
-	override string[] visit(Scene scene, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(Scene scene, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		import std.path : extension;
@@ -358,7 +358,7 @@ class VerifySceneVisitorSceneTypeClassTypeMismatch : VerifySceneVisitor {
 }
 
 class VerifyScriptVisitorNativeLibrary : VerifyScriptVisitor {
-	override string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(NativeScript script, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.file : exists;
 		string[] errors;
@@ -377,7 +377,7 @@ class VerifyScriptVisitorNativeLibrary : VerifyScriptVisitor {
 }
 
 class VerifyScriptVisitorClassName : VerifyScriptVisitor {
-	override string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(NativeScript script, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		string[] errors;
 
 		// Make sure script has a class name
@@ -390,7 +390,7 @@ class VerifyScriptVisitorClassName : VerifyScriptVisitor {
 }
 
 class VerifyScriptVisitorScriptClassInCode : VerifyScriptVisitor {
-	override string[] visit(NativeScript script, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(NativeScript script, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		import std.string : format;
 		import std.algorithm : filter;
 		import helpers : sortBy;
@@ -412,7 +412,7 @@ class VerifyScriptVisitorScriptClassInCode : VerifyScriptVisitor {
 }
 
 class VerifyLibraryVisitorSymbolPrefix : VerifyLibraryVisitor {
-	override string[] visit(NativeLibrary library, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(NativeLibrary library, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		string[] errors;
 
 		// Make sure library has symbol_prefix
@@ -425,7 +425,7 @@ class VerifyLibraryVisitorSymbolPrefix : VerifyLibraryVisitor {
 }
 
 class VerifyLibraryVisitorDllPath : VerifyLibraryVisitor {
-	override string[] visit(NativeLibrary library, string project_path, Info info, KlassInfo[] class_infos) {
+	override string[] visit(NativeLibrary library, string project_path, ProjectInfo info, KlassInfo[] class_infos) {
 		string[] errors;
 
 		// Make sure the dll/so is specified
