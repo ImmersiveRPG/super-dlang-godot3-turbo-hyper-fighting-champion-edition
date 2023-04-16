@@ -74,11 +74,14 @@ unittest {
 	import scan_d_code : getGodotScriptClasses;
 
 	string[][string] setupTest(string project_path) {
-		import helpers : absolutePath;
+		import helpers : absolutePath, buildPath;
 		project_path = absolutePath(project_path);
-		auto info = parseProjectInfoSync(project_path ~ `project/project.godot`);
-		auto class_infos = getGodotScriptClasses(project_path ~ `src/`);
-		return verifyProject(project_path ~ `project/`, info, class_infos);
+		string godot_path = buildPath(project_path, `project/`);
+		string src_path = buildPath(project_path, `src/`);
+
+		auto info = parseProjectInfoSync(godot_path);
+		auto class_infos = getGodotScriptClasses(src_path);
+		return verifyProject(godot_path, info, class_infos);
 	}
 
 	describe("godot_project_verify#project",

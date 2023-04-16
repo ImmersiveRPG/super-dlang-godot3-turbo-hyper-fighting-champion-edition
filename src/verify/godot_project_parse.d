@@ -14,32 +14,25 @@ import std.algorithm.comparison : clamp;
 import helpers;
 import godot_project;
 
-void getProjectFiles(string full_project_path, void delegate(string full_file_path) cb) {
+void listGodotFiles(string full_godot_project_path, void delegate(string full_file_path) cb) {
 	import std.path : extension;
 	import std.array : replace, array;
 	import std.algorithm : canFind;
 	import std.string : chompPrefix, stripLeft;
-	import helpers : getcwd, chdir, baseName, dirName, dirEntries, SpanMode;
-
-	string prev_dir = getcwd();
-	scope (exit) chdir(prev_dir);
-
-	// Get the directory path
-	string project_file = baseName(full_project_path);
-	string project_dir = dirName(full_project_path);
-	chdir(project_dir);
+	import helpers : baseName, dirName, dirEntries, SpanMode;
 
 	// Get the paths of all the files to scan
-	immutable string[] extensions = [".gdns", ".tscn", ".gdnlib", ".gd"];
-	auto entries = dirEntries(project_dir, SpanMode.breadth);
+	immutable string[] extensions = [".gdns", ".tscn", ".gdnlib", ".gd", ".godot"];
+	auto entries = dirEntries(full_godot_project_path, SpanMode.breadth);
 
-	cb("project.godot");
 	foreach (e ; entries) {
-		if (! e.isFile || ! extensions.canFind(e.name.extension)) continue;
+		if (! e.isFile) continue;
+		if (! extensions.canFind(e.name.extension)) continue;
+		if (e.name.extension == ".godot" && baseName(e.name) != "project.godot") continue;
 
 		auto f = e.name
 			.replace(`\`, `/`)
-			.chompPrefix(project_dir)
+			.chompPrefix(full_godot_project_path)
 			.stripLeft(`/`);
 		cb(f);
 	}
@@ -67,7 +60,7 @@ GodotFile parseGodotFile(string name) {
 	}
 }
 
-Info parseProjectInfoSync(string full_project_path) {
+Info parseProjectInfoSync(string full_godot_project_path) {
 	import std.path : extension;
 	import std.array : replace, array;
 	import std.algorithm : filter, map, canFind;
@@ -75,46 +68,39 @@ Info parseProjectInfoSync(string full_project_path) {
 	import helpers : getcwd, chdir, baseName, dirName, dirEntries, SpanMode;
 
 	string prev_dir = getcwd();
+	chdir(full_godot_project_path);
+	//stdout.writefln(`!!!! prev_dir: %s`, prev_dir); stdout.flush();
 	scope (exit) chdir(prev_dir);
 
-	// Get the directory path
-	string project_file = baseName(full_project_path);
-	string project_dir = dirName(full_project_path);
-	chdir(project_dir);
+	// Setup task pool to use 1 to 4 threads
+	u32 cpu_count = clamp(totalCPUs, 1, 4);
+	auto task_pool = new TaskPool(cpu_count);
+	scope(exit) task_pool.stop();
 
-	// Get the paths of all the files to scan
-	immutable string[] extensions = [".gdns", ".tscn", ".gdnlib", ".gd"];
-	string[] files_to_scan = "project.godot" ~
-			dirEntries(project_dir, SpanMode.breadth)
-			.filter!(e => extensions.canFind(e.name.extension))
-			.filter!(e => e.isFile)
-			.map!(e => e.name.replace(`\`, `/`))
-			.map!(e => e.chompPrefix(project_dir))
-			.map!(e => e.stripLeft(`/`))
-			.array;
+	// Start parsing each file in a task pool
+	Task!(parseGodotFile, string)*[] _parse_tasks;
+	listGodotFiles(full_godot_project_path, (string name) {
+		//stdout.writefln(`!!!! name: %s`, name); stdout.flush();
+		auto t = task!(parseGodotFile)(name);
+		_parse_tasks ~= t;
+		task_pool.put(t);
+	});
 
-	// Scan each file
+	// Complete all tasks in the pool
+	task_pool.finish();
+
+	// Copy all parsed files into project
 	Info info = new Info();
-	foreach (name ; files_to_scan) {
-		switch (extension(name)) {
-			case ".godot":
-				info._project = new Project(name);
-				break;
-			case ".tscn":
-				info._scenes[name] = new Scene(name);
-				break;
-			case ".gdns":
-				info._scripts[name] = new NativeScript(name);
-				break;
-			case ".gd":
-				info._gdscripts[name] = new GDScript(name);
-				break;
-			case ".gdnlib":
-				info._libraries[name] = new NativeLibrary(name);
-				break;
-			default:
-				break;
-		}
+	foreach (t ; _parse_tasks) {
+		GodotFile godot_file = t.yieldForce();
+		//stdout.writefln(`!!!! godot_file: %s`, godot_file); stdout.flush();
+		godot_file.match!(
+			(Project p) { info._project = p; },
+			(Scene s) { info._scenes[s._path] = s; },
+			(NativeScript ns) { info._scripts[ns._path] = ns; },
+			(GDScript gs) { info._gdscripts[gs._path] = gs; },
+			(NativeLibrary nl) { info._libraries[nl._path] = nl; }
+		);
 	}
 
 	return info;
@@ -130,9 +116,11 @@ unittest {
 	describe("godot_project_parse#SceneSignal",
 		it("Should parse basic project", delegate() {
 			string project_path = absolutePath(`test/project_signal/`);
+			string godot_path = buildPath(project_path, `project/`);
+			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto info = parseProjectInfoSync(project_path ~ `project/project.godot`);
+			auto info = parseProjectInfoSync(godot_path);
 			info._project.shouldNotBeNull();
 
 			// Make sure there is a scene
@@ -155,14 +143,16 @@ unittest {
 			scene._connections.length.shouldEqual(1);
 
 			// Make sure there is D code
-			auto class_infos = getGodotScriptClasses(project_path ~ `src/`);
+			auto class_infos = getGodotScriptClasses(src_path);
 			class_infos.map!(c => c.class_name).array.shouldEqual(["Level"]);
 		}),
 		it("Should parse project with unreferenced files", delegate() {
 			string project_path = absolutePath(`test/project_unreferenced_files/`);
+			string godot_path = buildPath(project_path, `project/`);
+			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto info = parseProjectInfoSync(project_path ~ `project/project.godot`);
+			auto info = parseProjectInfoSync(godot_path);
 			info.shouldNotBeNull();
 
 			// Make sure all scenes, scripts, and libraries were found
@@ -172,7 +162,7 @@ unittest {
 			info._libraries.keys.shouldEqual(["libgame.gdnlib"]);
 
 			// Make sure the D code was found
-			auto class_infos = getGodotScriptClasses(project_path ~ `src/`);
+			auto class_infos = getGodotScriptClasses(src_path);
 			class_infos.map!(c => c.class_name).array.shouldEqual(["Player"]);
 		})
 	);

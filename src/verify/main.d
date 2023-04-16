@@ -77,49 +77,20 @@ int main(string[] args) {
 	stdout.writefln(`Verifying Godot 3 Dlang project:`); stdout.flush();
 	stdout.writefln(`Project file path: %s`, project_path); stdout.flush();
 	stdout.writefln(`Dlang source path: %s`, source_path); stdout.flush();
-	//auto info = parseProjectInfoSync(buildPath(project_path, `project.godot`));
 	end = GetCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! setup time: %s`, end - start); stdout.flush();
 	}
 
+	// Get the godot project info
 	start = GetCpuTicksNS();
-
-	// Setup task pool to use 1 to 4 threads
-	u32 cpu_count = clamp(totalCPUs, 1, 4);
-	auto task_pool = new TaskPool(cpu_count);
-	scope(exit) task_pool.stop();
-
-	// Start parsing each file in a task pool
-	Task!(parseGodotFile, string)*[] _parse_tasks;
-	getProjectFiles(project_path, (string name) {
-		//stdout.writefln(`!!!! name: %s`, name); stdout.flush();
-		auto t = task!(parseGodotFile)(name);
-		_parse_tasks ~= t;
-		task_pool.put(t);
-	});
-
-	// Complete all tasks in the pool
-	task_pool.finish();
-
-	// Copy all parsed files into project
-	Info info = new Info();
-	foreach (t ; _parse_tasks) {
-		GodotFile godot_file = t.yieldForce();
-		godot_file.match!(
-			(Project p) { info._project = p; },
-			(Scene s) { info._scenes[s._path] = s; },
-			(NativeScript ns) { info._scripts[ns._path] = ns; },
-			(GDScript gs) { info._gdscripts[gs._path] = gs; },
-			(NativeLibrary nl) { info._libraries[nl._path] = nl; }
-		);
-	}
-
+	auto info = parseProjectInfoSync(project_path);
 	end = GetCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! parse time: %s`, end - start); stdout.flush();
 	}
 
+	// Get source code info
 	start = GetCpuTicksNS();
 	auto class_infos = getGodotScriptClasses(source_path);
 	end = GetCpuTicksNS();
