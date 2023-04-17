@@ -35,7 +35,6 @@
 		{
 			"name": "unittest",
 			"targetType": "staticLibrary",
-			"targetName": "godot-d-verify-test",
 			"excludedSourceFiles": ["src/verify/main.d", "src/godot/*"],
 			"sourcePaths": [ "src/verify/" ],
 			"importPaths": [ "src/verify/" ],
