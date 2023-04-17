@@ -2,8 +2,11 @@
 	"name": "super-dlang-godot3-turbo-hyper-fighting-champion-edition",
 	"version": "0.1.0",
 	"description": "Godot game engine language bindings",
-	"authors": [ "sheepandshepherd" ],
-	"copyright": "Copyright (c) 2007-2018 Juan Linietsky, Ariel Manzur.; Copyright (c) 2014-2018 Godot Engine contributors (cf. AUTHORS.md); Copyright (c) 2017-2018 Godot-D contributors",
+	"authors": [
+		"Matthew Brennan Jones <matthew.brennan.jones@gmail.com>",
+		"sheepandshepherd"
+	],
+	"copyright": "Copyright (c) 2021-2023 Matthew Brennan Jones; Copyright (c) 2007-2018 Juan Linietsky, Ariel Manzur.; Copyright (c) 2014-present Godot Engine contributors (cf. AUTHORS.md); Copyright (c) 2017-2021 Godot-D contributors",
 	"license": "MIT",
 
 	"buildTypes": {

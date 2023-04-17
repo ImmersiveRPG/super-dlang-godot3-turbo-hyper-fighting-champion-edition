@@ -1,7 +1,7 @@
 // Copyright (c) 2021-2023 Matthew Brennan Jones <matthew.brennan.jones@gmail.com>
 // MIT License
 // Verify Godot 3 projects that use the D Programming Language
-// https://github.com/workhorsy/godot-d-verify
+// https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
 module godot_project;
 

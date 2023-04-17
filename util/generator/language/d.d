@@ -32,8 +32,8 @@ private:
 
 static immutable string copyrightNotice = 
 `Copyright (c) 2007-2018 Juan Linietsky, Ariel Manzur.  
-Copyright (c) 2014-2018 Godot Engine contributors (cf. AUTHORS.md)  
-Copyright (c) 2017-2018 Godot-D contributors  `;
+Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md).  
+Copyright (c) 2017-2021 Godot-D contributors  `;
 
 string[2] generatePackage(GodotClass c)
 {
