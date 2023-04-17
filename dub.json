@@ -14,6 +14,7 @@
 		}
 	},
 
+	"targetPath": "builds",
 	"dflags": ["-preview=dip1000"],
 
 	"configurations": [
@@ -33,7 +34,6 @@
 		},
 		{
 			"name": "unittest",
-			"targetPath": "lib",
 			"targetType": "staticLibrary",
 			"targetName": "godot-d-verify-test",
 			"excludedSourceFiles": ["src/verify/main.d", "src/godot/*"],
@@ -51,12 +51,14 @@
 	"subPackages": [
 		{
 			"name": "util",
+			"targetPath": "builds",
 			"targetType": "library",
 			"sourcePaths": [ "util/src" ],
 			"importPaths": [ "util/src" ]
 		},
 		{
 			"name": "api-binding-generator",
+			"targetPath": "builds",
 			"description": "A program that binds Godot's API for use in Godot-D",
 			"dependencies":
 			{
@@ -68,6 +70,7 @@
 		},
 		{
 			"name": "verify",
+			"targetPath": "builds",
 			"dflags": [ "-preview=dip1000" ],
 			"targetType": "executable",
 			"dependencies": {
