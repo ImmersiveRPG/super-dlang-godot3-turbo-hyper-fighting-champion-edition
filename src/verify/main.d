@@ -16,9 +16,6 @@ bool is_printing_time = false;
 int main(string[] args) {
 	import std.file : chdir, exists;
 	import std.getopt : getopt, config;
-	import std.parallelism : Task, task, TaskPool, totalCPUs;
-	import std.sumtype : SumType, match;
-	import std.algorithm.comparison : clamp;
 
 	s64 start, end;
 	start = GetCpuTicksNS();
