@@ -9,10 +9,25 @@ import std.stdio : stdout, stderr;
 import scan_d_code : KlassInfo;
 import godot_project;
 import godot_project_parse;
+import helpers : u32;
 
 
+enum Verifications : u32 {
+	None                        = 1 << 0,
+	ProjectMainScene            = 1 << 1,
+	SceneResource               = 1 << 2,
+	SceneSignalMethodInCode     = 1 << 3,
+	SceneTypeClassTypeMismatch  = 1 << 4,
+	ScriptNativeLibrary         = 1 << 5,
+	ScriptClassName             = 1 << 6,
+	ScriptScriptClassInCode     = 1 << 7,
+	LibrarySymbolPrefix         = 1 << 8,
+	LibraryDllPath              = 1 << 9,
+	All                         = u32.max,
+}
 
-string[][string] verifyProject(string project_path, ProjectInfo project_info, KlassInfo[] class_infos) {
+
+string[][string] verifyProject(string godot_project_path, ProjectInfo project_info, KlassInfo[] class_infos, Verifications vers = Verifications.All) {
 	import std.string : format;
 	import std.algorithm : filter;
 	import std.array : assocArray, byPair;
@@ -20,11 +35,30 @@ string[][string] verifyProject(string project_path, ProjectInfo project_info, Kl
 
 	string[][string] retval;
 
+	VerifyProjectVisitor[] project_visitors = [];
+	if (vers & Verifications.ProjectMainScene) project_visitors ~= new VerifyProjectVisitorMainScene();
+
+	VerifySceneVisitor[] scene_visitors = [];
+	if (vers & Verifications.SceneResource) scene_visitors ~= new VerifySceneVisitorResource();
+	if (vers & Verifications.SceneSignalMethodInCode) scene_visitors ~= new VerifySceneVisitorSignalMethodInCode();
+	if (vers & Verifications.SceneTypeClassTypeMismatch) scene_visitors ~= new VerifySceneVisitorSceneTypeClassTypeMismatch();
+
+	VerifyScriptVisitor[] script_visitors = [];
+	if (vers & Verifications.ScriptNativeLibrary) script_visitors ~= new VerifyScriptVisitorNativeLibrary();
+	if (vers & Verifications.ScriptClassName) script_visitors ~= new VerifyScriptVisitorClassName();
+	if (vers & Verifications.ScriptScriptClassInCode) script_visitors ~= new VerifyScriptVisitorScriptClassInCode();
+
+	VerifyLibraryVisitor[] library_visitors = [];
+	if (vers & Verifications.LibrarySymbolPrefix) library_visitors ~= new VerifyLibraryVisitorSymbolPrefix();
+	if (vers & Verifications.LibraryDllPath) library_visitors ~= new VerifyLibraryVisitorDllPath();
+
 	// Check projects
 	ProjectFile project = project_info._project;
 	if (project && ! project._error) {
 		string[] errors;
-		errors ~= new VerifyProjectVisitorMainScene().visit(project_path, project_info, class_infos);
+		foreach (visitor ; project_visitors) {
+			errors ~= visitor.visit(godot_project_path, project_info, class_infos);
+		}
 		if (errors.length) retval[project._path] = errors;
 	}
 
@@ -32,9 +66,9 @@ string[][string] verifyProject(string project_path, ProjectInfo project_info, Kl
 	foreach (scene ; project_info._scenes.values.sortBy!("_path")) {
 		if (scene._error) continue;
 		string[] errors;
-		errors ~= new VerifySceneVisitorResource().visit(scene, project_path, project_info, class_infos);
-		errors ~= new VerifySceneVisitorSignalMethodInCode().visit(scene, project_path, project_info, class_infos);
-		errors ~= new VerifySceneVisitorSceneTypeClassTypeMismatch().visit(scene, project_path, project_info, class_infos);
+		foreach (visitor ; scene_visitors) {
+			errors ~= visitor.visit(scene, godot_project_path, project_info, class_infos);
+		}
 		if (errors.length) retval["tscn: %s".format(scene._path)] = errors;
 	}
 
@@ -42,9 +76,9 @@ string[][string] verifyProject(string project_path, ProjectInfo project_info, Kl
 	foreach (script ; project_info._scripts.values.sortBy!("_path")) {
 		if (script._error) continue;
 		string[] errors;
-		errors ~= new VerifyScriptVisitorNativeLibrary().visit(script, project_path, project_info, class_infos);
-		errors ~= new VerifyScriptVisitorClassName().visit(script, project_path, project_info, class_infos);
-		errors ~= new VerifyScriptVisitorScriptClassInCode().visit(script, project_path, project_info, class_infos);
+		foreach (visitor ; script_visitors) {
+			errors ~= visitor.visit(script, godot_project_path, project_info, class_infos);
+		}
 		if (errors.length) retval["gdns: %s".format(script._path)] = errors;
 	}
 
@@ -52,8 +86,9 @@ string[][string] verifyProject(string project_path, ProjectInfo project_info, Kl
 	foreach (library ; project_info._libraries.values.sortBy!("_path")) {
 		if (library._error) continue;
 		string[] errors;
-		errors ~= new VerifyLibraryVisitorSymbolPrefix().visit(library, project_path, project_info, class_infos);
-		errors ~= new VerifyLibraryVisitorDllPath().visit(library, project_path, project_info, class_infos);
+		foreach (visitor ; library_visitors) {
+			errors ~= visitor.visit(library, godot_project_path, project_info, class_infos);
+		}
 		if (errors.length) retval["gdnlib: %s".format(library._path)] = errors;
 	}
 
