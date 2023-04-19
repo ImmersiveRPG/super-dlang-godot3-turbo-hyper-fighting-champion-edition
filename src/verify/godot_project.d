@@ -9,6 +9,15 @@ module godot_project;
 import std.stdio : stdout;
 import helpers;
 
+
+class ProjectInfo {
+	ProjectFile _project;
+	SceneFile[string] _scenes;
+	GDScriptFile[string] _gdscripts;
+	NativeScriptFile[string] _scripts;
+	NativeLibraryFile[string] _libraries;
+}
+
 class EntryExtResource {
 	int id;
 
@@ -190,14 +199,6 @@ unittest {
 			resource._id.shouldEqual(21);
 		})
 	);
-}
-
-class ProjectInfo {
-	ProjectFile _project;
-	SceneFile[string] _scenes;
-	GDScriptFile[string] _gdscripts;
-	NativeScriptFile[string] _scripts;
-	NativeLibraryFile[string] _libraries;
 }
 
 class ProjectFile {
