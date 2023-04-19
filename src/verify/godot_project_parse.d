@@ -99,22 +99,22 @@ ProjectInfo getProjectInfo(string full_godot_project_path) {
 
 	// Copy all parsed files into project
 	start = GetCpuTicksNS();
-	ProjectInfo info = new ProjectInfo();
+	ProjectInfo project_info = new ProjectInfo();
 	foreach (t ; _parse_tasks) {
 		GodotFile godot_file = t.yieldForce();
 		//stdout.writefln(`!!!! godot_file: %s`, godot_file); stdout.flush();
 		godot_file.match!(
-			(ProjectFile p) { info._project = p; },
-			(SceneFile s) { info._scenes[s._path] = s; },
-			(NativeScriptFile ns) { info._scripts[ns._path] = ns; },
-			(GDScriptFile gs) { info._gdscripts[gs._path] = gs; },
-			(NativeLibraryFile nl) { info._libraries[nl._path] = nl; }
+			(ProjectFile p) { project_info._project = p; },
+			(SceneFile s) { project_info._scenes[s._path] = s; },
+			(NativeScriptFile ns) { project_info._scripts[ns._path] = ns; },
+			(GDScriptFile gs) { project_info._gdscripts[gs._path] = gs; },
+			(NativeLibraryFile nl) { project_info._libraries[nl._path] = nl; }
 		);
 	}
 	end = GetCpuTicksNS();
 	stdout.writefln(`3 !!!! ProjectInfo time: %s`, end - start); stdout.flush();
 
-	return info;
+	return project_info;
 }
 
 unittest {
@@ -131,12 +131,12 @@ unittest {
 			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto info = getProjectInfo(godot_path);
-			info._project.shouldNotBeNull();
+			auto project_info = getProjectInfo(godot_path);
+			project_info._project.shouldNotBeNull();
 
 			// Make sure there is a scene
-			info._scenes.keys.shouldEqual(["Level/Level.tscn"]);
-			auto scene = info._scenes["Level/Level.tscn"];
+			project_info._scenes.keys.shouldEqual(["Level/Level.tscn"]);
+			auto scene = project_info._scenes["Level/Level.tscn"];
 			scene.shouldNotBeNull();
 
 			// Make sure the scene has a signal
@@ -149,8 +149,8 @@ unittest {
 			auto resource = scene._resources[0];
 
 			// Make sure the scene has a script
-			info._scripts.keys.shouldEqual(["Level/Level.gdns"]);
-			auto script = info._scripts["Level/Level.gdns"];
+			project_info._scripts.keys.shouldEqual(["Level/Level.gdns"]);
+			auto script = project_info._scripts["Level/Level.gdns"];
 			scene._connections.length.shouldEqual(1);
 
 			// Make sure there is D code
@@ -163,14 +163,14 @@ unittest {
 			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto info = getProjectInfo(godot_path);
-			info.shouldNotBeNull();
+			auto project_info = getProjectInfo(godot_path);
+			project_info.shouldNotBeNull();
 
 			// Make sure all scenes, scripts, and libraries were found
-			info._scenes.keys.shouldEqual(["Player/Player.tscn", "Box2/Box2.tscn", "Level/Level.tscn"]);
-			info._gdscripts.keys.shouldEqual(["Box2/Box2.gd"]);
-			info._scripts.keys.shouldEqual(["Player/Player.gdns"]);
-			info._libraries.keys.shouldEqual(["libgame.gdnlib"]);
+			project_info._scenes.keys.shouldEqual(["Player/Player.tscn", "Box2/Box2.tscn", "Level/Level.tscn"]);
+			project_info._gdscripts.keys.shouldEqual(["Box2/Box2.gd"]);
+			project_info._scripts.keys.shouldEqual(["Player/Player.gdns"]);
+			project_info._libraries.keys.shouldEqual(["libgame.gdnlib"]);
 
 			// Make sure the D code was found
 			auto class_infos = getGodotScriptClasses(src_path);

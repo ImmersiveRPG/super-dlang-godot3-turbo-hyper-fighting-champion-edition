@@ -81,7 +81,7 @@ int main(string[] args) {
 
 	// Get the godot project info
 	start = GetCpuTicksNS();
-	auto info = getProjectInfo(project_path);
+	auto project_info = getProjectInfo(project_path);
 	end = GetCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! parse time: %s`, end - start); stdout.flush();
@@ -97,7 +97,7 @@ int main(string[] args) {
 
 	// Find and print any errors
 	start = GetCpuTicksNS();
-	auto project_errors = verifyProject(project_path, info, class_infos);
+	auto project_errors = verifyProject(project_path, project_info, class_infos);
 	int error_count;
 	foreach (name, errors ; project_errors) {
 		stdout.writeln(name);
