@@ -236,7 +236,7 @@ unittest {
 
 	describe("godot_project#ProjectFile",
 		before(delegate(){
-			reset_path("test/project_normal/project/");
+			resetPath("test/project_normal/project/");
 		}),
 		after(delegate(){
 			chdir(_root_path);
@@ -309,7 +309,7 @@ unittest {
 
 	describe("godot_project#SceneFile",
 		before(delegate(){
-			reset_path("test/project_normal/project/");
+			resetPath("test/project_normal/project/");
 		}),
 		after(delegate(){
 			chdir(_root_path);
@@ -417,7 +417,7 @@ unittest {
 
 	describe("godot_project#NativeScriptFile",
 		before(delegate(){
-			reset_path("test/project_normal/project/");
+			resetPath("test/project_normal/project/");
 		}),
 		after(delegate(){
 			chdir(_root_path);
@@ -492,7 +492,7 @@ unittest {
 
 	describe("godot_project#NativeLibraryFile",
 		before(delegate(){
-			reset_path("test/project_normal/project/");
+			resetPath("test/project_normal/project/");
 		}),
 		after(delegate(){
 			chdir(_root_path);

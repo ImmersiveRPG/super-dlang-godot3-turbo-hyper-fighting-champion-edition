@@ -22,13 +22,13 @@ public import core.stdc.stdint :
 	s16 = int16_t,
 	s8  = int8_t;
 
-s64 GetCpuTicksNS() {
+s64 getCpuTicksNS() {
 	import core.time : MonoTime, ticksToNSecs;
 
 	return ticksToNSecs(MonoTime.currTime.ticks);
 }
 
-void reset_path(string project_path) {
+void resetPath(string project_path) {
 	import std.file : chdir;
 	import helpers : getcwd, buildPath;
 

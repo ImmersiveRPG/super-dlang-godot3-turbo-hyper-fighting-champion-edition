@@ -80,7 +80,7 @@ ProjectInfo getProjectInfo(string full_godot_project_path) {
 	scope(exit) task_pool.stop();
 
 	// Start parsing each file in a task pool
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 	Task!(parseGodotFile, string)*[] _parse_tasks;
 	listGodotFiles(full_godot_project_path, (string name) {
 		//stdout.writefln(`!!!! name: %s`, name); stdout.flush();
@@ -88,17 +88,17 @@ ProjectInfo getProjectInfo(string full_godot_project_path) {
 		_parse_tasks ~= t;
 		task_pool.put(t);
 	});
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	stdout.writefln(`1 !!!! listGodotFiles time: %s`, end - start); stdout.flush();
 
 	// Complete all tasks in the pool
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 	task_pool.finish(true);
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	stdout.writefln(`2 !!!! finish time: %s`, end - start); stdout.flush();
 
 	// Copy all parsed files into project
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 	ProjectInfo project_info = new ProjectInfo();
 	foreach (t ; _parse_tasks) {
 		GodotFile godot_file = t.yieldForce();
@@ -111,7 +111,7 @@ ProjectInfo getProjectInfo(string full_godot_project_path) {
 			(NativeLibraryFile nl) { project_info._libraries[nl._path] = nl; }
 		);
 	}
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	stdout.writefln(`3 !!!! ProjectInfo time: %s`, end - start); stdout.flush();
 
 	return project_info;

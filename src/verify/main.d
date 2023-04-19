@@ -18,7 +18,7 @@ int main(string[] args) {
 	import std.getopt : getopt, config;
 
 	s64 start, end;
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 
 	// Change the dir to the location of the current exe
 	chdir(dirName(args[0]));
@@ -74,29 +74,29 @@ int main(string[] args) {
 	stdout.writefln(`Verifying Godot 3 Dlang project:`); stdout.flush();
 	stdout.writefln(`Project file path: %s`, project_path); stdout.flush();
 	stdout.writefln(`Dlang source path: %s`, source_path); stdout.flush();
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! setup time: %s`, end - start); stdout.flush();
 	}
 
 	// Get the godot project info
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 	auto project_info = getProjectInfo(project_path);
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! parse time: %s`, end - start); stdout.flush();
 	}
 
 	// Get source code info
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 	auto class_infos = getGodotScriptClasses(source_path);
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! get script classes time: %s`, end - start); stdout.flush();
 	}
 
 	// Find and print any errors
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 	auto project_errors = verifyProject(project_path, project_info, class_infos);
 	int error_count;
 	foreach (name, errors ; project_errors) {
@@ -110,13 +110,13 @@ int main(string[] args) {
 		stdout.writefln(`Verification failed! Found %s error(s)!`, error_count); stdout.flush();
 		return 1;
 	}
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! verify time: %s`, end - start); stdout.flush();
 	}
 
 	// Generate a list of classes that are GodotScript
-	start = GetCpuTicksNS();
+	start = getCpuTicksNS();
 	if (generate_script_list) {
 		string file_name = "generated_script_list.d";
 		string script_list_file = buildPath(source_path, file_name);
@@ -130,7 +130,7 @@ int main(string[] args) {
 		}
 		file.writefln("];\n");
 	}
-	end = GetCpuTicksNS();
+	end = getCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! generated_script_list time: %s`, end - start); stdout.flush();
 	}
