@@ -67,6 +67,8 @@ ProjectInfo parseProjectInfo(string full_godot_project_path) {
 	import std.string : chompPrefix, stripLeft;
 	import helpers : getcwd, chdir, baseName, dirName, dirEntries, SpanMode;
 
+	s64 start, end;
+
 	string prev_dir = getcwd();
 	chdir(full_godot_project_path);
 	//stdout.writefln(`!!!! prev_dir: %s`, prev_dir); stdout.flush();
@@ -78,6 +80,7 @@ ProjectInfo parseProjectInfo(string full_godot_project_path) {
 	scope(exit) task_pool.stop();
 
 	// Start parsing each file in a task pool
+	start = GetCpuTicksNS();
 	Task!(parseGodotFile, string)*[] _parse_tasks;
 	listGodotFiles(full_godot_project_path, (string name) {
 		//stdout.writefln(`!!!! name: %s`, name); stdout.flush();
@@ -85,11 +88,17 @@ ProjectInfo parseProjectInfo(string full_godot_project_path) {
 		_parse_tasks ~= t;
 		task_pool.put(t);
 	});
+	end = GetCpuTicksNS();
+	stdout.writefln(`1 !!!! listGodotFiles time: %s`, end - start); stdout.flush();
 
 	// Complete all tasks in the pool
+	start = GetCpuTicksNS();
 	task_pool.finish();
+	end = GetCpuTicksNS();
+	stdout.writefln(`2 !!!! finish time: %s`, end - start); stdout.flush();
 
 	// Copy all parsed files into project
+	start = GetCpuTicksNS();
 	ProjectInfo info = new ProjectInfo();
 	foreach (t ; _parse_tasks) {
 		GodotFile godot_file = t.yieldForce();
@@ -102,6 +111,8 @@ ProjectInfo parseProjectInfo(string full_godot_project_path) {
 			(NativeLibraryFile nl) { info._libraries[nl._path] = nl; }
 		);
 	}
+	end = GetCpuTicksNS();
+	stdout.writefln(`3 !!!! ProjectInfo time: %s`, end - start); stdout.flush();
 
 	return info;
 }
