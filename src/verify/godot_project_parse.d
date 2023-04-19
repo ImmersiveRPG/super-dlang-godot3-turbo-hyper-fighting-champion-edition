@@ -93,7 +93,7 @@ ProjectInfo parseProjectInfo(string full_godot_project_path) {
 
 	// Complete all tasks in the pool
 	start = GetCpuTicksNS();
-	task_pool.finish();
+	task_pool.finish(true);
 	end = GetCpuTicksNS();
 	stdout.writefln(`2 !!!! finish time: %s`, end - start); stdout.flush();
 
