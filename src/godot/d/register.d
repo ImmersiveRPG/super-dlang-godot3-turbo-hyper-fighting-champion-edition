@@ -45,6 +45,40 @@ enum LoadDRuntime : bool
 
 bool is_runtime_loaded = false;
 
+
+mixin template generateGodotNativeLibrary(
+	string symbol_prefix,
+	string[string] script_class_list,
+	void function(GodotInitOptions o) func_init = null,
+	void function(GodotTerminateOptions o) func_terminate = null,
+	void function(Throwable unhandled_error) func_error = null) {
+
+	import std.string : format;
+	import std.array : join;
+
+	// Import all the classes
+	static foreach (mod, klass ; script_class_list) {
+		mixin (`import %s : %s;`.format(mod, klass));
+	}
+
+	// Get all the classes
+	enum class_list = script_class_list.values.join(",\n");
+
+	// Generate the GodotNativeLibrary mixin with the prefix, classes, and funcs
+	enum string code =
+`mixin GodotNativeLibrary!(
+"%s",
+%s,
+(GodotInitOptions o) {
+	if (func_init) func_init(o);
+},
+(GodotTerminateOptions o) {
+	if (func_terminate) func_terminate(o);
+});`.format(symbol_prefix, class_list);
+	//pragma(msg, code);
+	mixin (code);
+}
+
 /++
 This mixin will generate the GDNative C interface functions for this D library.
 Pass to it a name string for the library, followed by the GodotScript types to

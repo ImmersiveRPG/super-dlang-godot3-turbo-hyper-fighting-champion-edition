@@ -118,21 +118,32 @@ int main(string[] args) {
 	// Generate a list of classes that are GodotScript
 	start = getCpuTicksNS();
 	if (generate_script_list) {
-		string file_name = "generated_script_list.d";
+		string file_name = "generated_gdnative_info.d";
 		string script_list_file = buildPath(source_path, file_name);
 		stdout.writefln(`Generating script list file: %s`, script_list_file); stdout.flush();
 		File file = File(script_list_file, "w");
 		scope (exit) file.close();
 
-		file.writefln("\n\nenum string[string] script_list = [");
-		foreach (class_info ; class_infos) {
-			file.writefln(`	"%s" : "%s",`, class_info._module, class_info.class_name);
+		file.writefln("\n");
+		file.writefln("struct GDNInfo {");
+		file.writefln("	string symbol_prefix;");
+		file.writefln("	string[string] script_class_list;");
+		file.writefln("}");
+
+		file.writefln(`enum auto infos = [`);
+		foreach (library ; project_info._libraries) {
+			file.writefln(`	"%s" : `, library._path);
+			file.writefln(`		GDNInfo("%s", [`, library._symbol_prefix);
+			foreach (class_info ; class_infos) {
+				file.writefln(`			"%s" : "%s",`, class_info._module, class_info.class_name);
+			}
+			file.writefln("		])");
 		}
-		file.writefln("];\n");
+		file.writefln("];");
 	}
 	end = getCpuTicksNS();
 	if (is_printing_time) {
-		stdout.writefln(`!!!! generated_script_list time: %s`, end - start); stdout.flush();
+		stdout.writefln(`!!!! generated_gdnative_info time: %s`, end - start); stdout.flush();
 	}
 
 	stdout.writefln(`All verification checks were successful.`); stdout.flush();
