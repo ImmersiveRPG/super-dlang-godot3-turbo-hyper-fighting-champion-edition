@@ -10,7 +10,7 @@ x. remove logo and readme code
 . Update examples to use verify
 . Look at using Mirror for CTFE https://github.com/atilaneves/mirror
 
-. Update to generateGodotNativeLibrary to get symbol_prefix from gdnlib file
-. Update to have a separate call back for Unhandled exceptions
+x. Update to generateGodotNativeLibrary to get symbol_prefix from gdnlib file
+x. Update to have a separate call back for Unhandled exceptions
 . update examples to use new generateGodotNativeLibrary
 . add test to verify unhandled exception
