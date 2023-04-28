@@ -71,6 +71,12 @@ mixin template generateGodotNativeLibrary(
 %s,
 (GodotInitOptions o) {
 	if (func_init) func_init(o);
+
+	import godot.d.wrap : on_unhandled_exception;
+
+	on_unhandled_exception = delegate(Throwable err) {
+		if (func_error) func_error(err);
+	};
 },
 (GodotTerminateOptions o) {
 	if (func_terminate) func_terminate(o);
