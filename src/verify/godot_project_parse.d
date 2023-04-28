@@ -89,13 +89,13 @@ ProjectInfo getProjectInfo(string full_godot_project_path) {
 		task_pool.put(t);
 	});
 	end = getCpuTicksNS();
-	stdout.writefln(`1 !!!! listGodotFiles time: %s`, end - start); stdout.flush();
+	//stdout.writefln(`1 !!!! listGodotFiles time: %s`, end - start); stdout.flush();
 
 	// Complete all tasks in the pool
 	start = getCpuTicksNS();
 	task_pool.finish(true);
 	end = getCpuTicksNS();
-	stdout.writefln(`2 !!!! finish time: %s`, end - start); stdout.flush();
+	//stdout.writefln(`2 !!!! finish time: %s`, end - start); stdout.flush();
 
 	// Copy all parsed files into project
 	start = getCpuTicksNS();
@@ -112,7 +112,7 @@ ProjectInfo getProjectInfo(string full_godot_project_path) {
 		);
 	}
 	end = getCpuTicksNS();
-	stdout.writefln(`3 !!!! ProjectInfo time: %s`, end - start); stdout.flush();
+	//stdout.writefln(`3 !!!! ProjectInfo time: %s`, end - start); stdout.flush();
 
 	return project_info;
 }
