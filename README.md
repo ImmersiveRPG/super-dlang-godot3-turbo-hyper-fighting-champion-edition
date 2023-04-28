@@ -3,7 +3,7 @@
 Super Dlang Godot 3 Turbo Hyper Fighting Champion Edition
 =======
 
-D language bindings for the [Godot 3](https://github.com/GodotNativeTools/godot_headers).
+D language bindings for [Godot 3](https://github.com/GodotNativeTools/godot_headers).
 
 :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
 :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
@@ -37,13 +37,13 @@ Forked from https://github.com/godot-d/godot-d
 
 License
 -------
-MIT - <https://opensource.org/licenses/MIT>  
+MIT - <https://opensource.org/licenses/MIT>
 
 Links
 -----
-GitHub repository - <https://github.com/GodotNativeTools/godot-d>  
-The C++ bindings these are based on - <https://github.com/GodotNativeTools/godot-cpp>  
-GDNative repository - <https://github.com/GodotNativeTools/godot_headers>  
+GitHub repository - <https://github.com/GodotNativeTools/godot-d>
+The C++ bindings these are based on - <https://github.com/GodotNativeTools/godot-cpp>
+GDNative repository - <https://github.com/GodotNativeTools/godot_headers>
 
-Godot Engine - <https://godotengine.org>  
-D programming language - <https://dlang.org>  
+Godot Engine - <https://godotengine.org>
+D programming language - <https://dlang.org>
