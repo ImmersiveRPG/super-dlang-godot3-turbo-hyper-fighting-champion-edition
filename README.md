@@ -21,18 +21,29 @@ These bindings are experimental. Do not expect them to work.
 Verification
 -------------------------
 
-1. Ensure gdnlib symbol_prefix is set
-2. Ensure gdnlib library path is set
-3. Ensure project main scene is set
-4. Ensure project main scene file exists
-5. Ensure scene external resource files exist
-6. Ensure scene type and dlang class type are same
-7. Ensure scene signal exists in dlang class
-8. Ensure scene signal has @Method attribute
-9. Ensure gdns has class_name
-10. Ensure gdsn has a external resource of type GDNativeLibrary
-11. Ensure gdsn external resource GDNativeLibrary file exists
-12. Ensure gdsn class exists in dlang code
+gdnlib
+
+	1. Ensure symbol_prefix is set
+	2. Ensure library path is set
+
+project
+
+	1. Ensure main scene is set
+	2. Ensure main scene file exists
+
+scene
+
+	1. Ensure external resource files exist
+	2. Ensure node type and dlang class type are same
+	3. Ensure signal exists in dlang class
+	4. Ensure signal has @Method attribute
+
+gdns
+
+	1. Ensure has class_name
+	2. Ensure has a external resource of type GDNativeLibrary
+	3. Ensure external resource GDNativeLibrary file exists
+	4. Ensure class exists in dlang code
 
 
 
