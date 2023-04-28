@@ -18,6 +18,22 @@ These bindings are experimental. Do not expect them to work.
 :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
 
 
+Verification
+-------------------------
+
+1. Ensure gdnlib symbol_prefix is set
+2. Ensure gdnlib library path is set
+3. Ensure project main scene is set
+4. Ensure project main scene file exists
+5. Ensure scene external resource files exist
+6. Ensure scene type and dlang class type are same
+7. Ensure scene signal exists in dlang class
+8. Ensure scene signal has @Method attribute
+9. Ensure gdns has class_name
+10. Ensure gdsn has a external resource of type GDNativeLibrary
+11. Ensure gdsn external resource GDNativeLibrary file exists
+12. Ensure gdsn class exists in dlang code
+
 
 
 Generate classes from API files
