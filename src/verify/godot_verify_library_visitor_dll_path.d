@@ -16,11 +16,11 @@ class VerifyLibraryVisitorDllPath : VerifyLibraryVisitor {
 		// Make sure the dll/so is specified
 		version (Windows) {
 			if (library._dll_windows_path == null) {
-				errors ~= `Library missing Windows.64`;
+				errors ~= `Library missing path for Windows.64`;
 			}
 		} else version (linux) {
 			if (library._dll_linux_path == null) {
-				errors ~= `Library missing X11.64`;
+				errors ~= `Library missing path for X11.64`;
 			}
 		}
 
@@ -37,11 +37,11 @@ unittest {
 
 			version (Windows) {
 				errors.shouldEqual([`gdnlib: libsimple.gdnlib`:
-					[`Library missing Windows.64`]
+					[`Library missing path for Windows.64`]
 				]);
 			} else version (linux) {
 				errors.shouldEqual([`gdnlib: libsimple.gdnlib`:
-					[`Library missing X11.64`]
+					[`Library missing path for X11.64`]
 				]);
 			}
 		})
