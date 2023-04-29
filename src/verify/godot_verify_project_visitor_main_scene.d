@@ -16,9 +16,9 @@ class VerifyProjectVisitorMainScene : VerifyProjectVisitor {
 		string[] errors;
 
 		if (project_info._project._main_scene_path == null) {
-			errors ~= `Project missing main scene`;
+			errors ~= `Project missing main_scene`;
 		} else if (! exists(project_path ~ project_info._project._main_scene_path)) {
-			errors ~= `Project main scene file not found: "%s"`.format(project_info._project._main_scene_path);
+			errors ~= `Project main_scene file not found: "%s"`.format(project_info._project._main_scene_path);
 		}
 
 		return errors;
@@ -32,13 +32,13 @@ unittest {
 		it("Should fail when project main scene is not specified", () {
 			auto errors = runVerification(`test/project_main_scene_no_entry/`, Verifications.ProjectMainScene);
 			errors.shouldEqual([`project.godot`:
-				[`Project missing main scene`]
+				[`Project missing main_scene`]
 			]);
 		}),
 		it("Should fail when project main scene file is not found", () {
 			auto errors = runVerification(`test/project_main_scene_no_file/`, Verifications.ProjectMainScene);
 			errors.shouldEqual([`project.godot`:
-				[`Project main scene file not found: "Level/XXX.tscn"`]
+				[`Project main_scene file not found: "Level/XXX.tscn"`]
 			]);
 		})
 	);

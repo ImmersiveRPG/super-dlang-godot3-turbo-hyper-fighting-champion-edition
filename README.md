@@ -28,15 +28,15 @@ gdnlib
 
 project
 
-	1. Ensure main scene is set
-	2. Ensure main scene file exists
+	1. Ensure main_scene is set
+	2. Ensure main_scene file exists
 
 scene
 
 	1. Ensure external resource files exist
 	2. Ensure node type and dlang class type are same
-	3. Ensure signal exists in dlang class
-	4. Ensure signal has @Method attribute
+	3. Ensure signal method exists in dlang class
+	4. Ensure signal method in dlang class has @Method attribute
 
 gdns
 
