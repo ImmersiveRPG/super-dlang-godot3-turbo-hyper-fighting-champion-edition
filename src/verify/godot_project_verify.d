@@ -35,16 +35,8 @@ string[][string] verifyProject(string godot_project_path, ProjectInfo project_in
 
 	string[][string] retval;
 
-	import godot_verify_normal : VerifyProjectVisitorPass;
-	import godot_verify_project_visitor_main_scene : VerifyProjectVisitorMainScene;
-	import godot_verify_scene_visitor_resource : VerifySceneVisitorResource;
-	import godot_verify_scene_visitor_signal_method_in_code : VerifySceneVisitorSignalMethodInCode;
-	import godot_verify_scene_visitor_scene_type_class_type_mismatch : VerifySceneVisitorSceneTypeClassTypeMismatch;
-	import godot_verify_script_visitor_native_library : VerifyScriptVisitorNativeLibrary;
-	import godot_verify_script_visitor_class_name : VerifyScriptVisitorClassName;
-	import godot_verify_script_visitors_script_class_in_code : VerifyScriptVisitorScriptClassInCode;
-	import godot_verify_library_visitor_symbol_prefix : VerifyLibraryVisitorSymbolPrefix;
-	import godot_verify_library_visitor_dll_path : VerifyLibraryVisitorDllPath;
+	import verifiers;
+
 
 	VerifyProjectVisitor[] project_visitors = [];
 	project_visitors ~= new VerifyProjectVisitorPass();

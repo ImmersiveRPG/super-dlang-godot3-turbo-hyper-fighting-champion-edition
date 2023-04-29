@@ -40,7 +40,7 @@
 			"targetType": "staticLibrary",
 			"excludedSourceFiles": ["src/verify/main.d", "src/godot/*"],
 			"sourcePaths": [ "src/verify/" ],
-			"importPaths": [ "src/verify/" ],
+			"importPaths": [ "src/verify/", "src/verify/verifiers/" ],
 			"dependencies": {
 				"bdd": "~>3.1.0",
 				"utf_bc": "~>0.2.1",

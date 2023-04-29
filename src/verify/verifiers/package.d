@@ -1,0 +1,16 @@
+
+
+module verifiers;
+
+public {
+	import verify_normal : VerifyProjectVisitorPass;
+	import verify_project_visitor_main_scene : VerifyProjectVisitorMainScene;
+	import verify_scene_visitor_resource : VerifySceneVisitorResource;
+	import verify_scene_visitor_signal_method_in_code : VerifySceneVisitorSignalMethodInCode;
+	import verify_scene_visitor_scene_type_class_type_mismatch : VerifySceneVisitorSceneTypeClassTypeMismatch;
+	import verify_script_visitor_native_library : VerifyScriptVisitorNativeLibrary;
+	import verify_script_visitor_class_name : VerifyScriptVisitorClassName;
+	import verify_script_visitors_script_class_in_code : VerifyScriptVisitorScriptClassInCode;
+	import verify_library_visitor_symbol_prefix : VerifyLibraryVisitorSymbolPrefix;
+	import verify_library_visitor_dll_path : VerifyLibraryVisitorDllPath;
+}
