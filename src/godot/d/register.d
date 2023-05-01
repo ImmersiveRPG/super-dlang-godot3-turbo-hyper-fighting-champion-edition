@@ -51,7 +51,7 @@ mixin template generateGodotNativeLibrary(
 	string[string] script_class_list,
 	void function(GodotInitOptions o) func_init = null,
 	void function(GodotTerminateOptions o) func_terminate = null,
-	void function(Throwable unhandled_error) func_error = null) {
+	void function(Throwable unhandled_exception) func_unhandled_exception = null) {
 
 	import std.string : format;
 	import std.array : join;
@@ -74,8 +74,8 @@ mixin template generateGodotNativeLibrary(
 
 	import godot.d.wrap : on_unhandled_exception;
 
-	on_unhandled_exception = delegate(Throwable err) {
-		if (func_error) func_error(err);
+	on_unhandled_exception = delegate(Throwable unhandled_exception) {
+		if (func_unhandled_exception) func_unhandled_exception(unhandled_exception);
 	};
 },
 (GodotTerminateOptions o) {

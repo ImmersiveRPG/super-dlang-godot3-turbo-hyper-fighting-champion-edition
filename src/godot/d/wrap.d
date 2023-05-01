@@ -15,9 +15,9 @@ import godot.d.traits, godot.d.script;
 import godot.core, godot.c;
 import godot.node;
 
-public void delegate(Throwable err) on_unhandled_exception = delegate(Throwable err) {
+public void delegate(Throwable unhandled_exception) on_unhandled_exception = delegate(Throwable unhandled_exception) {
 	import std.stdio : stderr;
-	stderr.writeln(err);
+	stderr.writeln(unhandled_exception);
 };
 
 private template staticCount(alias thing, seq...)
