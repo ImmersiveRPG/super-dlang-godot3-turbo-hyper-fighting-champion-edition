@@ -3,7 +3,9 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
+module verify_library_visitor_dll_path;
 
+import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, NativeLibraryFile;
 import godot_project_verify : Verifications, runVerification, verifyProject, VerifyLibraryVisitor;
@@ -33,8 +35,11 @@ unittest {
 
 	describe("godot_project_verify#library",
 		it("Should fail when native library dll/so file is not specified", () {
-			auto errors = runVerification(`test/project_library_no_dll_entry/`, Verifications.LibraryDllPath);
+			auto test_path = __FILE__.dirName.buildPath("tests/project_library_no_dll_entry") ~ "/";
+			auto errors = runVerification(test_path, Verifications.LibraryDllPath);
 
+			//import std.stdio : stdout;
+			//stdout.writefln("test_path: %s", test_path); stdout.flush();
 			version (Windows) {
 				errors.shouldEqual([`gdnlib: libsimple.gdnlib`:
 					[`Library missing path for Windows.64`]
