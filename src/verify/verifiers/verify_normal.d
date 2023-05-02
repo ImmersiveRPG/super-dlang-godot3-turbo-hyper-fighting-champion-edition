@@ -23,7 +23,7 @@ unittest {
 
 	describe("godot_project_verify#project",
 		it("Should succeed on working project", () {
-			auto errors = runVerification(`test/project_normal/`, Verifications.All);
+			auto errors = runVerification(`tests/project_normal/`, Verifications.All);
 			errors.shouldEqual((string[][string]).init);
 		})
 	);

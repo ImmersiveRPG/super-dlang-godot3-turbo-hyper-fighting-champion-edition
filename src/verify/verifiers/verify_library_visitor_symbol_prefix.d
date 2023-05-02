@@ -27,7 +27,7 @@ unittest {
 
 	describe("godot_project_verify#library",
 		it("Should fail when native library symbol_prefix is not specified", () {
-			auto errors = runVerification(`test/project_library_no_symbol_prefix_entry/`, Verifications.LibrarySymbolPrefix);
+			auto errors = runVerification(`tests/project_library_no_symbol_prefix_entry/`, Verifications.LibrarySymbolPrefix);
 			errors.shouldEqual([`gdnlib: libsimple.gdnlib`:
 				[`Library missing symbol_prefix`]
 			]);

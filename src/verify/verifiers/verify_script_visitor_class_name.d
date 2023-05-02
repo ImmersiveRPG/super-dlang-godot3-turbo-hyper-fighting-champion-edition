@@ -28,7 +28,7 @@ unittest {
 
 	describe("godot_project_verify#script",
 		it("Should fail when script class_name is not specified", () {
-			auto errors = runVerification(`test/project_script_no_class_name/`, Verifications.ScriptClassName);
+			auto errors = runVerification(`tests/project_script_no_class_name/`, Verifications.ScriptClassName);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script missing class_name`]
 			]);

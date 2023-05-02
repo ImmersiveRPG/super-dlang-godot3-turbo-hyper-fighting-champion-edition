@@ -34,13 +34,13 @@ unittest {
 
 	describe("godot_project_verify#script",
 		it("Should fail when script native library is not specified", () {
-			auto errors = runVerification(`test/project_script_resource_no_entry/`, Verifications.ScriptNativeLibrary);
+			auto errors = runVerification(`tests/project_script_resource_no_entry/`, Verifications.ScriptNativeLibrary);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script missing native library`]
 			]);
 		}),
 		it("Should fail when script native library file is not found", () {
-			auto errors = runVerification(`test/project_script_resource_no_file/`, Verifications.ScriptNativeLibrary);
+			auto errors = runVerification(`tests/project_script_resource_no_file/`, Verifications.ScriptNativeLibrary);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script resource file not found: "XXX.gdnlib"`]
 			]);

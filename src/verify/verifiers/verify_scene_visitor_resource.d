@@ -35,7 +35,7 @@ unittest {
 
 	describe("godot_project_verify#scene",
 		it("Should fail when scene resource file is not found", () {
-			auto errors = runVerification(`test/project_scene_resource_missing/`, Verifications.SceneResource);
+			auto errors = runVerification(`tests/project_scene_resource_missing/`, Verifications.SceneResource);
 			errors.shouldEqual([`tscn: Level/Level.tscn`:
 				[`Scene resource file not found: "Player/XXX.tscn"`]
 			]);

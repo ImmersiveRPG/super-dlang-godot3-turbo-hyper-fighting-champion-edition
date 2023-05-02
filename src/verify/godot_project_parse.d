@@ -126,7 +126,7 @@ unittest {
 
 	describe("godot_project_parse#SceneSignal",
 		it("Should parse basic project", delegate() {
-			string project_path = absolutePath(`test/project_signal/`);
+			string project_path = absolutePath(`tests/project_signal/`);
 			string godot_path = buildPath(project_path, `project/`);
 			string src_path = buildPath(project_path, `src/`);
 
@@ -158,7 +158,7 @@ unittest {
 			class_infos.map!(c => c.class_name).array.shouldEqual(["Level"]);
 		}),
 		it("Should parse project with unreferenced files", delegate() {
-			string project_path = absolutePath(`test/project_unreferenced_files/`);
+			string project_path = absolutePath(`tests/project_unreferenced_files/`);
 			string godot_path = buildPath(project_path, `project/`);
 			string src_path = buildPath(project_path, `src/`);
 

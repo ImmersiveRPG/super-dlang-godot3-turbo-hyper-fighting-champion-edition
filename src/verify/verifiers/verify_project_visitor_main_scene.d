@@ -30,13 +30,13 @@ unittest {
 
 	describe("godot_project_verify#project",
 		it("Should fail when project main scene is not specified", () {
-			auto errors = runVerification(`test/project_main_scene_no_entry/`, Verifications.ProjectMainScene);
+			auto errors = runVerification(`tests/project_main_scene_no_entry/`, Verifications.ProjectMainScene);
 			errors.shouldEqual([`project.godot`:
 				[`Project missing main_scene`]
 			]);
 		}),
 		it("Should fail when project main scene file is not found", () {
-			auto errors = runVerification(`test/project_main_scene_no_file/`, Verifications.ProjectMainScene);
+			auto errors = runVerification(`tests/project_main_scene_no_file/`, Verifications.ProjectMainScene);
 			errors.shouldEqual([`project.godot`:
 				[`Project main_scene file not found: "Level/XXX.tscn"`]
 			]);

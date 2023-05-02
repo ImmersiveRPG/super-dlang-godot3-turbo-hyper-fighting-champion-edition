@@ -60,7 +60,7 @@ unittest {
 
 	describe("godot_project_verify#scene",
 		it("Should fail when scene type is not same as script code type", () {
-			auto errors = runVerification(`test/project_script_code_class_wrong_type/`, Verifications.SceneTypeClassTypeMismatch);
+			auto errors = runVerification(`tests/project_script_code_class_wrong_type/`, Verifications.SceneTypeClassTypeMismatch);
 			errors.shouldEqual([`tscn: Player/Player.tscn`:
 				[`Scene "Player" is type "Spatial" but attached script "Player" is type "GodotScript!Area"`]
 			]);

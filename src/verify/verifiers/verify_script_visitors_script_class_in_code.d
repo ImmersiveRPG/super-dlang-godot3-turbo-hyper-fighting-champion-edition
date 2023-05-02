@@ -37,7 +37,7 @@ unittest {
 
 	describe("godot_project_verify#script",
 		it("Should fail when script class does not exist in code", () {
-			auto errors = runVerification(`test/project_script_no_code_class/`, Verifications.ScriptScriptClassInCode);
+			auto errors = runVerification(`tests/project_script_no_code_class/`, Verifications.ScriptScriptClassInCode);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script missing class "player.Player"`]
 			]);
