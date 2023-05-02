@@ -11,7 +11,7 @@ D language bindings and verification for [Godot 3](https://github.com/GodotNativ
 
 !!! WARNING !!!
 
-These bindings are experimental. Do not expect them to work.
+These bindings are experimental. Do not expect them to work. Only working on dmd 2.102 right now.
 
 :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
 :warning: :warning: :warning: :warning: :warning: :warning: :warning: :warning:
