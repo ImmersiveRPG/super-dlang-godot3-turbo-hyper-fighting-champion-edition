@@ -2,6 +2,23 @@
 
 module verifiers;
 
+import helpers : u32;
+
+
+enum Verifications : u32 {
+	None                        = 1 << 0,
+	ProjectMainScene            = 1 << 1,
+	SceneResource               = 1 << 2,
+	SceneSignalMethodInCode     = 1 << 3,
+	SceneTypeClassTypeMismatch  = 1 << 4,
+	ScriptNativeLibrary         = 1 << 5,
+	ScriptClassName             = 1 << 6,
+	ScriptScriptClassInCode     = 1 << 7,
+	LibrarySymbolPrefix         = 1 << 8,
+	LibraryDllPath              = 1 << 9,
+	All                         = u32.max,
+}
+
 public {
 	import verify_normal : VerifyProjectVisitorPass;
 	import verify_project_visitor_main_scene : VerifyProjectVisitorMainScene;

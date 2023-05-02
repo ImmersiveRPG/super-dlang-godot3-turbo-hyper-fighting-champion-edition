@@ -11,21 +11,7 @@ import godot_project;
 import godot_project_parse;
 import helpers : u32;
 
-
-enum Verifications : u32 {
-	None                        = 1 << 0,
-	ProjectMainScene            = 1 << 1,
-	SceneResource               = 1 << 2,
-	SceneSignalMethodInCode     = 1 << 3,
-	SceneTypeClassTypeMismatch  = 1 << 4,
-	ScriptNativeLibrary         = 1 << 5,
-	ScriptClassName             = 1 << 6,
-	ScriptScriptClassInCode     = 1 << 7,
-	LibrarySymbolPrefix         = 1 << 8,
-	LibraryDllPath              = 1 << 9,
-	All                         = u32.max,
-}
-
+public import verifiers;
 
 string[][string] verifyProject(string godot_project_path, ProjectInfo project_info, KlassInfo[] class_infos, Verifications vers = Verifications.All) {
 	import std.string : format;
@@ -34,9 +20,6 @@ string[][string] verifyProject(string godot_project_path, ProjectInfo project_in
 	import helpers : sortBy;
 
 	string[][string] retval;
-
-	import verifiers;
-
 
 	VerifyProjectVisitor[] project_visitors = [];
 	project_visitors ~= new VerifyProjectVisitorPass();
