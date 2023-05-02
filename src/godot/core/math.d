@@ -1,8 +1,9 @@
 /**
 
 Copyright:
+Copyright (c) 2021-2023 Matthew Brennan Jones  
 Copyright (c) 2007-2021 Juan Linietsky, Ariel Manzur.
-Copyright (c) 2014-2021 Godot Engine contributors (cf. AUTHORS.md).
+Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md).
 Copyright (c) 2017-2023 Godot-D contributors
 
 License: $(LINK2 https://opensource.org/licenses/MIT, MIT License)

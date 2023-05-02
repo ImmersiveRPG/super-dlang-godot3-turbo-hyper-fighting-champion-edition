@@ -2,6 +2,7 @@
 Vector struct, which performs basic 3D vector math operations.
 
 Copyright:
+Copyright (c) 2021-2023 Matthew Brennan Jones  
 Copyright (c) 2007-2018 Juan Linietsky, Ariel Manzur.  
 Copyright (c) 2014-present Godot Engine contributors (see AUTHORS.md).  
 Copyright (c) 2017-2021 Godot-D contributors  
