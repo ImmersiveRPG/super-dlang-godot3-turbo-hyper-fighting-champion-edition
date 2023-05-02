@@ -27,10 +27,6 @@
 			"dflags-linux-dmd": ["-fPIC"],
 			"dflags-linux-ldc2": ["-relocation-model=pic"],
 
-			"excludedSourceFiles": [
-				"src/verify/main.d",
-				"src/verify/verifiers/*/tests/*"
-			],
 			"importPaths": [ "src", "classes" ],
 			"sourcePaths": [ "src", "classes" ],
 			"dependencies": {
@@ -43,12 +39,12 @@
 			"name": "unittest",
 			"targetType": "staticLibrary",
 			"excludedSourceFiles": [
-				"src/verify/main.d",
+				"verify/main.d",
 				"src/godot/*",
-				"src/verify/verifiers/*/tests/*"
+				"verify/verifiers/*/tests/*"
 			],
-			"sourcePaths": [ "src/verify/" ],
-			"importPaths": [ "src/verify/", "src/verify/verifiers/" ],
+			"sourcePaths": [ "verify/" ],
+			"importPaths": [ "verify/", "verify/verifiers/" ],
 			"dependencies": {
 				"bdd": "~>3.1.0",
 				"utf_bc": "~>0.2.1",
@@ -63,10 +59,6 @@
 			"name": "util",
 			"targetPath": "builds",
 			"targetType": "library",
-			"excludedSourceFiles": [
-				"src/verify/main.d",
-				"src/verify/verifiers/*/tests/*"
-			],
 			"sourcePaths": [ "util/src" ],
 			"importPaths": [ "util/src" ]
 		},
@@ -80,10 +72,6 @@
 				"asdf": "~>0.6.7",
 				"dxml": "~>0.4.3"
 			},
-			"excludedSourceFiles": [
-				"src/verify/main.d",
-				"src/verify/verifiers/*/tests/*"
-			],
 			"sourcePaths": [ "util/generator" ]
 		},
 		{
@@ -95,11 +83,10 @@
 				"libdparse": "~>0.22.0"
 			},
 			"excludedSourceFiles": [
-				"src/verify/main.d",
-				"src/verify/verifiers/*/tests/*"
+				"verify/verifiers/*/tests/*"
 			],
-			"sourcePaths": [ "src/verify" ],
-			"importPaths": [ "src/verify" ]
+			"sourcePaths": [ "verify" ],
+			"importPaths": [ "verify" ]
 		},
 		"./examples/test/",
 		"./examples/asteroids/"
