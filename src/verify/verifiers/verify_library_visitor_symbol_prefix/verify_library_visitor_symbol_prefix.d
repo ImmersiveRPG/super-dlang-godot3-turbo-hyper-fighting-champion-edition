@@ -3,6 +3,7 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
+module verify_library_visitor_symbol_prefix;
 
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
@@ -29,7 +30,7 @@ unittest {
 	describe("godot_project_verify#library",
 		it("Should fail when native library symbol_prefix is not specified", () {
 			auto test_path = __FILE__.dirName.buildPath("tests/project_library_no_symbol_prefix_entry") ~ "/";
-			auto errors = runVerification(`tests/project_library_no_symbol_prefix_entry/`, Verifications.LibrarySymbolPrefix);
+			auto errors = runVerification(test_path, Verifications.LibrarySymbolPrefix);
 			errors.shouldEqual([`gdnlib: libsimple.gdnlib`:
 				[`Library missing symbol_prefix`]
 			]);

@@ -3,6 +3,7 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
+module verify_normal;
 
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
@@ -25,7 +26,7 @@ unittest {
 	describe("godot_project_verify#project",
 		it("Should succeed on working project", () {
 			auto test_path = __FILE__.dirName.buildPath("tests/project_normal") ~ "/";
-			auto errors = runVerification(`tests/project_normal/`, Verifications.All);
+			auto errors = runVerification(test_path, Verifications.All);
 			errors.shouldEqual((string[][string]).init);
 		})
 	);

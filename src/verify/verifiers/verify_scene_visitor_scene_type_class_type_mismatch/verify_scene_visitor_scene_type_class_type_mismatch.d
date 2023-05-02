@@ -3,6 +3,7 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
+module verify_scene_visitor_scene_type_class_type_mismatch;
 
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
@@ -62,7 +63,7 @@ unittest {
 	describe("godot_project_verify#scene",
 		it("Should fail when scene type is not same as script code type", () {
 			auto test_path = __FILE__.dirName.buildPath("tests/project_script_code_class_wrong_type") ~ "/";
-			auto errors = runVerification(`tests/project_script_code_class_wrong_type/`, Verifications.SceneTypeClassTypeMismatch);
+			auto errors = runVerification(test_path, Verifications.SceneTypeClassTypeMismatch);
 			errors.shouldEqual([`tscn: Player/Player.tscn`:
 				[`Scene "Player" is type "Spatial" but attached script "Player" is type "GodotScript!Area"`]
 			]);

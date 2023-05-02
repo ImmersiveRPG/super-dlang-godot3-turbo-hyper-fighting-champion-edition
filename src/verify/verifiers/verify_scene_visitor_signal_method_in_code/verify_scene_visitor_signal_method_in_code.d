@@ -3,6 +3,7 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
+module verify_scene_visitor_signal_method_in_code;
 
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
@@ -93,14 +94,14 @@ unittest {
 	describe("godot_project_verify#scene",
 		it("Should fail when signal method doesn't exists in code", () {
 			auto test_path = __FILE__.dirName.buildPath("tests/project_scene_signal_no_code_method") ~ "/";
-			auto errors = runVerification(`tests/project_scene_signal_no_code_method/`, Verifications.SceneSignalMethodInCode);
+			auto errors = runVerification(test_path, Verifications.SceneSignalMethodInCode);
 			errors.shouldEqual([`tscn: Level/Level.tscn`:
 				[`Signal method "xxx" not found in class "level.Level"`]
 			]);
 		}),
 		it("Should fail when signal method exists but missing Method attribute", () {
 			auto test_path = __FILE__.dirName.buildPath("tests/project_scene_signal_no_method_attribute") ~ "/";
-			auto errors = runVerification(`tests/project_scene_signal_no_method_attribute/`, Verifications.SceneSignalMethodInCode);
+			auto errors = runVerification(test_path, Verifications.SceneSignalMethodInCode);
 			errors.shouldEqual([`tscn: Level/Level.tscn`:
 				[`Signal method "on_button_pressed" found in class "level.Level" but missing @Method attribute`]
 			]);

@@ -3,6 +3,7 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
+module verify_scene_visitor_resource;
 
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
@@ -37,7 +38,7 @@ unittest {
 	describe("godot_project_verify#scene",
 		it("Should fail when scene resource file is not found", () {
 			auto test_path = __FILE__.dirName.buildPath("tests/project_scene_resource_missing") ~ "/";
-			auto errors = runVerification(`tests/project_scene_resource_missing/`, Verifications.SceneResource);
+			auto errors = runVerification(test_path, Verifications.SceneResource);
 			errors.shouldEqual([`tscn: Level/Level.tscn`:
 				[`Scene resource file not found: "Player/XXX.tscn"`]
 			]);

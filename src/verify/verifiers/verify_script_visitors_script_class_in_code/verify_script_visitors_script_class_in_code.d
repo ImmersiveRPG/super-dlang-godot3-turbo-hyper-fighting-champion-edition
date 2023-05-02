@@ -3,6 +3,7 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
+module verify_script_visitors_script_class_in_code;
 
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
@@ -39,7 +40,7 @@ unittest {
 	describe("godot_project_verify#script",
 		it("Should fail when script class does not exist in code", () {
 			auto test_path = __FILE__.dirName.buildPath("tests/project_script_no_code_class") ~ "/";
-			auto errors = runVerification(`tests/project_script_no_code_class/`, Verifications.ScriptScriptClassInCode);
+			auto errors = runVerification(test_path, Verifications.ScriptScriptClassInCode);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script missing class "player.Player"`]
 			]);
