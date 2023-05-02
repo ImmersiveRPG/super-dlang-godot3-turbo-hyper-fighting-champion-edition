@@ -4,6 +4,7 @@
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
 
+import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, NativeScriptFile;
 import godot_project_verify : Verifications, runVerification, verifyProject, VerifyScriptVisitor;
@@ -34,12 +35,14 @@ unittest {
 
 	describe("godot_project_verify#script",
 		it("Should fail when script native library is not specified", () {
+			auto test_path = __FILE__.dirName.buildPath("tests/project_script_resource_no_entry") ~ "/";
 			auto errors = runVerification(`tests/project_script_resource_no_entry/`, Verifications.ScriptNativeLibrary);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script missing native library`]
 			]);
 		}),
 		it("Should fail when script native library file is not found", () {
+			auto test_path = __FILE__.dirName.buildPath("tests/project_script_resource_no_file") ~ "/";
 			auto errors = runVerification(`tests/project_script_resource_no_file/`, Verifications.ScriptNativeLibrary);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script resource file not found: "XXX.gdnlib"`]

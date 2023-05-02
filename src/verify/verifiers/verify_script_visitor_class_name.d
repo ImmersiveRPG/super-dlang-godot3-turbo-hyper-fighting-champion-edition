@@ -4,6 +4,7 @@
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
 
+import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, NativeScriptFile;
 import godot_project_verify : Verifications, runVerification, verifyProject, VerifyScriptVisitor;
@@ -28,6 +29,7 @@ unittest {
 
 	describe("godot_project_verify#script",
 		it("Should fail when script class_name is not specified", () {
+			auto test_path = __FILE__.dirName.buildPath("tests/project_script_no_class_name") ~ "/";
 			auto errors = runVerification(`tests/project_script_no_class_name/`, Verifications.ScriptClassName);
 			errors.shouldEqual([`gdns: Player/Player.gdns`:
 				[`Script missing class_name`]

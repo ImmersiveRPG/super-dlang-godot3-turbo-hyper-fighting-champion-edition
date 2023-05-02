@@ -4,6 +4,7 @@
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
 
+import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, NativeScriptFile;
 import godot_project_verify : Verifications, runVerification, verifyProject, VerifyProjectVisitor;
@@ -23,6 +24,7 @@ unittest {
 
 	describe("godot_project_verify#project",
 		it("Should succeed on working project", () {
+			auto test_path = __FILE__.dirName.buildPath("tests/project_normal") ~ "/";
 			auto errors = runVerification(`tests/project_normal/`, Verifications.All);
 			errors.shouldEqual((string[][string]).init);
 		})
