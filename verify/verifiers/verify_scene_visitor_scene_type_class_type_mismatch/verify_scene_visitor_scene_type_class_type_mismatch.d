@@ -8,7 +8,8 @@ module verify_scene_visitor_scene_type_class_type_mismatch;
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, SceneFile;
-import godot_project_verify : Verifications, runVerification, verifyProject, VerifySceneVisitor;
+import godot_project_verify : Verifications, runVerification, verifyProject;
+import verifiers : VerifySceneVisitor;
 
 
 

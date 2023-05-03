@@ -8,7 +8,8 @@ module verify_scene_visitor_signal_method_in_code;
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, SceneFile;
-import godot_project_verify : Verifications, runVerification, verifyProject, VerifySceneVisitor;
+import godot_project_verify : Verifications, runVerification, verifyProject;
+import verifiers : VerifySceneVisitor;
 
 
 class VerifySceneVisitorSignalMethodInCode : VerifySceneVisitor {

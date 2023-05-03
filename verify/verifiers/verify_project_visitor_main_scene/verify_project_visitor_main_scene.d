@@ -8,7 +8,8 @@ module verify_project_visitor_main_scene;
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo;
-import godot_project_verify : Verifications, runVerification, verifyProject, VerifyProjectVisitor;
+import godot_project_verify : Verifications, runVerification, verifyProject;
+import verifiers : VerifyProjectVisitor;
 
 
 class VerifyProjectVisitorMainScene : VerifyProjectVisitor {

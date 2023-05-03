@@ -8,7 +8,8 @@ module verify_script_visitor_class_name;
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, NativeScriptFile;
-import godot_project_verify : Verifications, runVerification, verifyProject, VerifyScriptVisitor;
+import godot_project_verify : Verifications, runVerification, verifyProject;
+import verifiers : VerifyScriptVisitor;
 
 
 

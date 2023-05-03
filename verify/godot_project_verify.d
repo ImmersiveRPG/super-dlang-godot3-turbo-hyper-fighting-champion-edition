@@ -9,7 +9,6 @@ import std.stdio : stdout, stderr;
 import scan_d_code : KlassInfo;
 import godot_project;
 import godot_project_parse;
-import helpers : u32;
 
 public import verifiers;
 
@@ -21,23 +20,10 @@ string[][string] verifyProject(string godot_project_path, ProjectInfo project_in
 
 	string[][string] retval;
 
-	VerifyProjectVisitor[] project_visitors = [];
-	project_visitors ~= new VerifyProjectVisitorPass();
-	if (vers & Verifications.ProjectMainScene) project_visitors ~= new VerifyProjectVisitorMainScene();
-
-	VerifySceneVisitor[] scene_visitors = [];
-	if (vers & Verifications.SceneResource) scene_visitors ~= new VerifySceneVisitorResource();
-	if (vers & Verifications.SceneSignalMethodInCode) scene_visitors ~= new VerifySceneVisitorSignalMethodInCode();
-	if (vers & Verifications.SceneTypeClassTypeMismatch) scene_visitors ~= new VerifySceneVisitorSceneTypeClassTypeMismatch();
-
-	VerifyScriptVisitor[] script_visitors = [];
-	if (vers & Verifications.ScriptNativeLibrary) script_visitors ~= new VerifyScriptVisitorNativeLibrary();
-	if (vers & Verifications.ScriptClassName) script_visitors ~= new VerifyScriptVisitorClassName();
-	if (vers & Verifications.ScriptScriptClassInCode) script_visitors ~= new VerifyScriptVisitorScriptClassInCode();
-
-	VerifyLibraryVisitor[] library_visitors = [];
-	if (vers & Verifications.LibrarySymbolPrefix) library_visitors ~= new VerifyLibraryVisitorSymbolPrefix();
-	if (vers & Verifications.LibraryDllPath) library_visitors ~= new VerifyLibraryVisitorDllPath();
+	auto project_visitors = getProjectVisitors(vers);
+	auto scene_visitors = getSceneVisitors(vers);
+	auto script_visitors = getScriptVisitors(vers);
+	auto library_visitors = getVerifyLibraryVisitor(vers);
 
 	// Check projects
 	ProjectFile project = project_info._project;
@@ -103,20 +89,6 @@ string[][string] runVerification(string project_path, Verifications vers) {
 	return verifyProject(godot_path, project_info, class_infos, vers);
 }
 
-abstract class VerifyProjectVisitor {
-	string[] visit(string project_path, ProjectInfo project_info, KlassInfo[] class_infos);
-}
 
-abstract class VerifySceneVisitor {
-	string[] visit(SceneFile scene, string project_path, ProjectInfo project_info, KlassInfo[] class_infos);
-}
-
-abstract class VerifyScriptVisitor {
-	string[] visit(NativeScriptFile script, string project_path, ProjectInfo project_info, KlassInfo[] class_infos);
-}
-
-abstract class VerifyLibraryVisitor {
-	string[] visit(NativeLibraryFile library, string project_path, ProjectInfo project_info, KlassInfo[] class_infos);
-}
 
 

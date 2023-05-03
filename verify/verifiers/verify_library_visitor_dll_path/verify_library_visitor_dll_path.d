@@ -8,7 +8,8 @@ module verify_library_visitor_dll_path;
 import helpers : dirName, buildPath;
 import scan_d_code : KlassInfo;
 import godot_project : ProjectInfo, NativeLibraryFile;
-import godot_project_verify : Verifications, runVerification, verifyProject, VerifyLibraryVisitor;
+import godot_project_verify : Verifications, runVerification, verifyProject;
+import verifiers : VerifyLibraryVisitor;
 
 
 class VerifyLibraryVisitorDllPath : VerifyLibraryVisitor {
