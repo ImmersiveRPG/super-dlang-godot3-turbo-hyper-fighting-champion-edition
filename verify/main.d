@@ -5,7 +5,7 @@
 
 import helpers;
 import godot_project;
-import godot_project_parse : getProjectInfo;
+import scan_godot_files : scanProjectInfo;
 import godot_project_verify : verifyProject;
 import scan_d_code : getGodotScriptClasses;
 
@@ -81,7 +81,7 @@ int main(string[] args) {
 
 	// Get the godot project info
 	start = getCpuTicksNS();
-	auto project_info = getProjectInfo(project_path);
+	auto project_info = scanProjectInfo(project_path);
 	end = getCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! parse time: %s`, end - start); stdout.flush();

@@ -3,7 +3,7 @@
 // Verify Godot 3 projects that use the D Programming Language
 // https://github.com/ImmersiveRPG/super-dlang-godot3-turbo-hyper-fighting-champion-edition
 
-module godot_project_parse;
+module scan_godot_files;
 
 
 import std.stdio : stdout;
@@ -40,7 +40,7 @@ void listGodotFiles(string full_godot_project_path, void delegate(string full_fi
 
 alias GodotFile = SumType!(ProjectFile, SceneFile, NativeScriptFile, GDScriptFile, NativeLibraryFile);
 
-GodotFile parseGodotFile(string name) {
+GodotFile scanGodotFile(string name) {
 	import std.string : format;
 	import std.path : extension;
 
@@ -60,7 +60,7 @@ GodotFile parseGodotFile(string name) {
 	}
 }
 
-ProjectInfo getProjectInfo(string full_godot_project_path) {
+ProjectInfo scanProjectInfo(string full_godot_project_path) {
 	import std.path : extension;
 	import std.array : replace, array;
 	import std.algorithm : filter, map, canFind;
@@ -81,10 +81,10 @@ ProjectInfo getProjectInfo(string full_godot_project_path) {
 
 	// Start parsing each file in a task pool
 	start = getCpuTicksNS();
-	Task!(parseGodotFile, string)*[] _parse_tasks;
+	Task!(scanGodotFile, string)*[] _parse_tasks;
 	listGodotFiles(full_godot_project_path, (string name) {
 		//stdout.writefln(`!!!! name: %s`, name); stdout.flush();
-		auto t = task!(parseGodotFile)(name);
+		auto t = task!(scanGodotFile)(name);
 		_parse_tasks ~= t;
 		task_pool.put(t);
 	});
@@ -124,14 +124,14 @@ unittest {
 	import helpers : absolutePath;
 	import scan_d_code : getGodotScriptClasses;
 
-	describe("godot_project_parse#SceneSignal",
+	describe("scan_godot_files#SceneSignal",
 		it("Should parse basic project", delegate() {
 			string project_path = absolutePath(`tests/project_signal/`);
 			string godot_path = buildPath(project_path, `project/`);
 			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto project_info = getProjectInfo(godot_path);
+			auto project_info = scanProjectInfo(godot_path);
 			project_info._project.shouldNotBeNull();
 
 			// Make sure there is a scene
@@ -163,7 +163,7 @@ unittest {
 			string src_path = buildPath(project_path, `src/`);
 
 			// Make sure there is a project
-			auto project_info = getProjectInfo(godot_path);
+			auto project_info = scanProjectInfo(godot_path);
 			project_info.shouldNotBeNull();
 
 			// Make sure all scenes, scripts, and libraries were found
