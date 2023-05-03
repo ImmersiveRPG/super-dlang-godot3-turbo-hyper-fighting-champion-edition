@@ -7,7 +7,7 @@ import helpers;
 import godot_project;
 import scan_godot_files : scanProjectInfo;
 import godot_project_verify : verifyProject;
-import scan_d_code : getGodotScriptClasses;
+import scan_d_code : scanGodotScriptClasses;
 
 import std.stdio : stdout, stderr, File;
 
@@ -89,7 +89,7 @@ int main(string[] args) {
 
 	// Get source code info
 	start = getCpuTicksNS();
-	auto class_infos = getGodotScriptClasses(source_path);
+	auto class_infos = scanGodotScriptClasses(source_path);
 	end = getCpuTicksNS();
 	if (is_printing_time) {
 		stdout.writefln(`!!!! get script classes time: %s`, end - start); stdout.flush();

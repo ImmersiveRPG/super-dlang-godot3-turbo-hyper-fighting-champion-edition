@@ -122,7 +122,7 @@ unittest {
 	import std.algorithm : map;
 	import std.array : array;
 	import helpers : absolutePath;
-	import scan_d_code : getGodotScriptClasses;
+	import scan_d_code : scanGodotScriptClasses;
 
 	describe("scan_godot_files#SceneSignal",
 		it("Should parse basic project", delegate() {
@@ -154,7 +154,7 @@ unittest {
 			scene._connections.length.shouldEqual(1);
 
 			// Make sure there is D code
-			auto class_infos = getGodotScriptClasses(src_path);
+			auto class_infos = scanGodotScriptClasses(src_path);
 			class_infos.map!(c => c.class_name).array.shouldEqual(["Level"]);
 		}),
 		it("Should parse project with unreferenced files", delegate() {
@@ -173,7 +173,7 @@ unittest {
 			project_info._libraries.keys.shouldEqual(["libgame.gdnlib"]);
 
 			// Make sure the D code was found
-			auto class_infos = getGodotScriptClasses(src_path);
+			auto class_infos = scanGodotScriptClasses(src_path);
 			class_infos.map!(c => c.class_name).array.shouldEqual(["Player"]);
 		})
 	);

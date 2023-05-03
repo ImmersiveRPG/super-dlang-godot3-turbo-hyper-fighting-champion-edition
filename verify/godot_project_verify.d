@@ -77,7 +77,7 @@ string[][string] verifyProject(string godot_project_path, ProjectInfo project_in
 
 string[][string] runVerification(string project_path, Verifications vers) {
 	import scan_godot_files : scanProjectInfo;
-	import scan_d_code : getGodotScriptClasses;
+	import scan_d_code : scanGodotScriptClasses;
 	import helpers : absolutePath, buildPath;
 
 	project_path = absolutePath(project_path);
@@ -85,7 +85,7 @@ string[][string] runVerification(string project_path, Verifications vers) {
 	string src_path = buildPath(project_path, `src/`);
 
 	auto project_info = scanProjectInfo(godot_path);
-	auto class_infos = getGodotScriptClasses(src_path);
+	auto class_infos = scanGodotScriptClasses(src_path);
 	return verifyProject(godot_path, project_info, class_infos, vers);
 }
 

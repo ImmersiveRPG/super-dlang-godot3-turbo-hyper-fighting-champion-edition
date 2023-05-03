@@ -157,7 +157,7 @@ private class KlassInfoVisitor : ASTVisitor {
 	}
 }
 
-KlassInfo[] getGodotScriptClasses(string path_to_src) {
+KlassInfo[] scanGodotScriptClasses(string path_to_src) {
 	import std.algorithm : filter, map;
 	import std.array : replace;
 	import std.path : extension;
